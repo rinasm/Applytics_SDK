@@ -24,8 +24,8 @@ var dataBuffer = [];
 var eventListener = null;
 var cssRules = '';
 var inputNodeNames = ['TEXTAREA', 'INPUT'];
-var initialSnapshotSend = false; // let domRef = null;
-
+var initialSnapshotSend = false;
+window.rcData = [];
 var eventTypes = {
   snapshot: 'snapshot',
   characterData: 'characterData',
@@ -42,13 +42,16 @@ var eventTypes = {
 var Recorder =
 /*#__PURE__*/
 function () {
-  function Recorder() {
+  function Recorder(_ref) {
     var _this = this;
+
+    var cid = _ref.cid,
+        sid = _ref.sid,
+        aid = _ref.aid;
 
     _classCallCheck(this, Recorder);
 
     _defineProperty(this, "start", function (node) {
-      // domRef = node;
       _this.recordStyle();
 
       _this.bindScroll(window);
@@ -61,6 +64,7 @@ function () {
         _this.handleMutations(mutations);
       });
       observer.observe(node, config);
+      console.log('Started Recording');
     });
 
     _defineProperty(this, "getRCIDFromEl", function (el) {
@@ -369,17 +373,39 @@ function () {
     });
 
     _defineProperty(this, "publishLiveUpdate", function (event) {
-      if (typeof eventListener === 'function') {
-        eventListener(event, data);
+      if (eventListener) {
+        var msg = _this.wrapEvent(event);
+
+        window.rcData.push(msg);
+        eventListener(msg, data);
       }
     });
 
     _defineProperty(this, "getLiveUpdate", function (listener) {
       if (typeof listener === 'function') {
         eventListener = listener;
-        if (data.length) eventListener(data[data.length - 1], data);
+
+        if (data.length) {
+          var msg = _this.wrapEvent(data[data.length - 1]);
+
+          eventListener(msg, data);
+        }
       }
     });
+
+    _defineProperty(this, "wrapEvent", function (data) {
+      return {
+        sid: _this.sid,
+        cid: _this.cid,
+        aid: _this.aid,
+        data: data
+      };
+    });
+
+    this.cid = cid;
+    this.sid = sid;
+    this.aid = aid;
+    console.log('Recorder Initiated');
   }
 
   _createClass(Recorder, [{
@@ -404,7 +430,7 @@ function () {
 
   return Recorder;
 }();
-/**=============================================================================================================================
+/**====================================================================================================================================
  * 
  * 
  * 
@@ -434,7 +460,7 @@ function () {
  * 
  * 
  * 
- * ==============================================================================================================================
+ * ===================================================================================================================================
  */
 
 
@@ -446,7 +472,7 @@ function loadJS(file, callback) {
   document.body.appendChild(jsElm);
 }
 
-var host = 'https://react-eternal-list.rinas.in:10200';
+var host = 'https://applytics.in:3000';
 
 (function (funcName, baseObj) {
   funcName = funcName || "docReady";
@@ -506,17 +532,46 @@ var host = 'https://react-eternal-list.rinas.in:10200';
   };
 })("docReady", window);
 
-var RecorderHandler = function RecorderHandler() {
+var RecorderHandler = function RecorderHandler(_ref2) {
   var _this2 = this;
 
+  var clientId = _ref2.clientId,
+      appId = _ref2.appId;
+
   _classCallCheck(this, RecorderHandler);
+
+  _defineProperty(this, "generateRandomString", function (length) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+
+    for (var idx = 0; idx < length; idx++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    return result;
+  });
+
+  _defineProperty(this, "generateSID", function () {
+    return _this2.generateRandomString(4) + '-' + _this2.generateRandomString(4) + '-' + _this2.generateRandomString(2);
+  });
+
+  _defineProperty(this, "getSID", function () {
+    var sid = window.apprc_sid || null;
+
+    if (sid === null) {
+      sid = _this2.generateSID();
+    }
+
+    return sid;
+  });
 
   _defineProperty(this, "onDisconnect", function () {
     _this2.initiated = false;
   });
 
   _defineProperty(this, "onConnect", function () {
-    console.log('Connected to Socket!');
+    console.log('Connected to Socket');
 
     _this2.socket.emit('init', {
       type: 'recorder'
@@ -527,6 +582,8 @@ var RecorderHandler = function RecorderHandler() {
     for (var idx in _this2.recorderData) {
       _this2.sendToServer(_this2.recorderData[idx]);
     }
+
+    _this2.recorderData = [];
   });
 
   _defineProperty(this, "sendToServer", function (event) {
@@ -535,13 +592,15 @@ var RecorderHandler = function RecorderHandler() {
     _this2.socket.emit('msg', event);
   });
 
-  _defineProperty(this, "onRecorderUpdater", function (event, data) {
+  _defineProperty(this, "onRecorderUpdater", function (event) {
     _this2.recorderData.push(event);
 
     _this2.sendToServer(event);
   });
 
   window.docReady(function () {
+    var sid = _this2.getSID();
+
     loadJS('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js', function () {
       console.log('Socket loaded');
       var io = window.io;
@@ -556,17 +615,20 @@ var RecorderHandler = function RecorderHandler() {
       _this2.socket.once('disconnect', _this2.onDisconnect);
 
       _this2.recorderData = [];
-      _this2.recorder = new Recorder(); // setTimeout(()=> {
+      _this2.recorder = new Recorder({
+        sid: sid,
+        cid: clientId,
+        aid: appId
+      });
 
-      console.log('DOC ready');
-      console.log('Starting to Record');
+      _this2.recorder.getLiveUpdate(_this2.onRecorderUpdater);
 
       _this2.recorder.start(document.body);
-
-      _this2.recorder.getLiveUpdate(_this2.onRecorderUpdater); // }, 500);
-
     });
   });
 };
 
-new RecorderHandler();
+new RecorderHandler({
+  clientId: 'TestClientId',
+  appId: 'TestAppId'
+});
