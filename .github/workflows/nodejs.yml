@@ -6,12 +6,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:  
-      - name: build the OSM proejct
-        run: ls 
-      - name: executing remote git pull and restart pm2
-        uses: appleboy/ssh-action@master
-        with:
-          host: test.applytics.in
-          username: albin_git
-          key: ${{ secrets.SERVER_PRIVATE_KEY }}
-          script: ls && ls -alt
+    - name: executing remote git pull and restart pm2
+      uses: appleboy/ssh-action@master
+      with:
+        host: test.applytics.in
+        username: albin_git
+        key: ${{ secrets.SERVER_PRIVATE_KEY }}
+        script: cd Applytics_SDK && git pull && npm install && npm run build && cd src/dist && pm2 serve ./build 5000 --name "recoder"
