@@ -12,5 +12,4 @@ jobs:
         host: test.applytics.in
         username: albin_git
         key: ${{ secrets.SERVER_PRIVATE_KEY }}
-        script: ls -alt
-        run: Applytics_SDK && git pull && npm install && npm run build && cd src/dist && pm2 serve ./build 5000 --name "recoder"
+        script: ls -alt && cd Applytics_SDK && git pull && npm install && npm run build && cd src/dist && pm2 serve ./build 5000 --name "recoder"
