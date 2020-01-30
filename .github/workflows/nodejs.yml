@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:  
       - name: build the OSM proejct
-        run: npm install && npm run build
+        run: ls && cd Applytics_SDK && npm install && npm run build
       - name: executing remote git pull and restart pm2
         uses: appleboy/ssh-action@master
         with:
