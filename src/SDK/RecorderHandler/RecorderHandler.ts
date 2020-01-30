@@ -1,0 +1,146 @@
+import '../Helpers/DocReady';
+import {getSID, loadJS, generateSID} from '../Helpers/Helpers';
+import Recorder from '../Recorder/Recorder';
+import {host} from '../Constants/Constants';
+
+interface RHArgs {
+    clientId: String,
+    appId: String
+}
+
+export default class RecorderHandler {
+
+    sid: String;
+    cid: String;
+    aid: String;
+    rcDataBuffer: Array<any> = [];
+    recorderData: Array<any> = [];
+    recorder: any = null;
+    socket: any;
+    socketInter: any;
+    initiated: Boolean = false;
+    packetIndex: any = 0; 
+
+    constructor(args: RHArgs) {
+
+        this.sid = getSID();
+        this.aid = args.appId;
+        this.cid = args.clientId;
+
+        // console.log('DOC Ready 1')
+
+        (<any>window).docReady(()=> {
+            loadJS('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js', ()=>{
+                console.log('Socket loaded');
+                this.recorderData = [];
+                this.recorder = new Recorder({
+                    sid: this.sid,
+                    cid: this.cid,
+                    aid: this.aid
+                });
+                this.recorder.getLiveUpdate(this.onRecorderUpdater);
+                this.recorder.start(document.body);
+
+                let io = (<any>window).io;
+                this.socket = io.connect(host, {transports:['websocket', 'polling']});
+                this.socket.once('connect', this.onConnect);
+                this.socket.once('reconnect', this.onConnect);
+                this.socket.once('disconnect', this.onDisconnect);
+            })
+        }, window)
+
+    }
+ 
+    onDisconnect =()=> {
+        this.initiated = false;
+    }
+
+    onConnect =()=> {
+        console.log('Connected to Socket');
+        this.initiated = true;
+        
+        /**
+         *  Sending Session Meta
+         */
+        let sessionMetaData = this.getSessionMeta();
+        this.socket.emit('sessionReciver', sessionMetaData);
+
+        /**
+         *  Sending Buffered Data
+         */
+        for(let idx in this.recorderData) {
+            this.sendToServer(this.recorderData[idx]);
+        }
+        this.recorderData = [];
+
+        /**
+         *  Initiating Sender
+         */
+        this.socketInter = setInterval(()=> {
+            if(this.rcDataBuffer && this.rcDataBuffer.length) {
+                console.log('[ARC] Sending Data', this.rcDataBuffer.length);
+                let packet = {
+                    sid: this.sid,
+                    cid: this.cid,
+                    aid: this.aid,
+                    pid: this.getPID(),
+                    index: this.packetIndex,
+                    type: 'event',
+                    timestamp: Date.now(),
+                    data: this.rcDataBuffer
+                };
+                this.packetIndex+=1;
+                if((<any>window).ARCDev || true) {
+                    let size:any =  JSON.stringify(packet).length * 2;
+                    console.log('[ARC] Packet size', size, 'Bytes, ', Math.ceil(size/1024), 'kb')
+                }
+                this.socket.emit('sessionReciver', packet);
+                this.rcDataBuffer = [];
+            }
+        }, 1000);
+    }
+
+    getPID =()=> generateSID()
+
+    sendToServer =(event: any)=> {
+        if(!this.initiated)
+            return;
+
+        this.rcDataBuffer.push(event);
+    }
+
+    onRecorderUpdater =(event:any)=> {
+        this.recorderData.push(event);
+        this.sendToServer(event);
+    }
+
+    getSessionMeta =()=> {
+        if(!this.recorder) {
+            console.error('[ARC] FATAL ERR: Recorder not Found')
+            return;
+        }
+        let meta:any = this.recorder.getAllMetaData(false);
+        return {
+            sid: this.sid,
+            cid: this.cid,
+            aid: this.aid,
+            type:'session',
+            deviceType: 'desktop',
+            createdAt: Date.now(),
+            metaData: {
+              browserName: meta.browser,
+              os: meta.os,
+              cpuCore: meta.core,
+              deviceMemory: meta.deviceMemory,
+              screenType: meta.isTouchDevice,
+              language: meta.language,
+              cookieEnabled: meta.cookieEnabled,
+              referrer: meta.referrer,
+              browserVersion: meta.browser,
+              osVersion: meta.os,
+              userAgent: navigator.userAgent
+            },
+        }
+    }
+
+}
