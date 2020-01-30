@@ -1,0 +1,15 @@
+name: Deploy
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:  
+    - name: executing remote git pull and restart pm2
+      uses: appleboy/ssh-action@master
+      with:
+        host: test.applytics.in
+        username: albin_git
+        key: ${{ secrets.SERVER_PRIVATE_KEY }}
+        script: ls
