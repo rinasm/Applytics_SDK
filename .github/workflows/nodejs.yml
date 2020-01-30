@@ -12,4 +12,4 @@ jobs:
         host: test.applytics.in
         username: albin_git
         key: ${{ secrets.SERVER_PRIVATE_KEY }}
-        script: ls
+        script: ls && ls -alt
