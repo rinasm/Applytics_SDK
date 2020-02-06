@@ -12,4 +12,4 @@ jobs:
         host: test.applytics.in
         username: albin_git
         key: ${{ secrets.SERVER_PRIVATE_KEY }}
-        script: cd sdk && git pull && npm install && npm run build && pm2 serve -f ./src/dist 6000 --name "sdk" 
+        script: cd sdk && git pull && npm install && npm run build && pm2 stop sdk && pm2 serve -f ./src/dist 6000 --name "sdk" 
