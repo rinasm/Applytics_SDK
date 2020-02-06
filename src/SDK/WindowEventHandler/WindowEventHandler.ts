@@ -92,23 +92,10 @@ export default class WindowEventHandler {
 
     trackHashChange =()=> {
         window.onhashchange = ()=> { 
-            let event:any = this.getURLDetails();
+            let event:any = this.getRecorder().getURLDetails();
             event.type = eventTypes.hashChanged;
             this.getRecorder().generateEvent(event);
         }
     }
 
-    getURLDetails =()=> {
-        return {
-            origin: window.location.origin,
-            protocol: window.location.protocol,
-            host: window.location.host,
-            hostname: window.location.hostname,
-            port: window.location.port,
-            pathname: window.location.pathname,
-            search: window.location.search,
-            hash: window.location.hash,
-            href: window.location.href
-        }
-    }
 }

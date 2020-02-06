@@ -44,7 +44,7 @@ export default class Recorder {
         this.windowEventHandler = new WindowEventHandler({ getRecorder: ()=> this });
         this.webRequestHandler = new WebRequestHandler({ getRecorder: ()=> this });
         this.metaDataHandler = new MetaDataHandler({ getRecorder: ()=> this });
-        console.log('[ARC] Recorder Initiated. V 0.1.0');
+        console.log('[ARC] Recorder Initiated. V 0.1.3');
     }    
 
     start =(node: any)=> {
@@ -164,6 +164,20 @@ export default class Recorder {
         });     
     }
 
+    getURLDetails =()=> {
+        return {
+            origin: window.location.origin,
+            protocol: window.location.protocol,
+            host: window.location.host,
+            hostname: window.location.hostname,
+            port: window.location.port,
+            pathname: window.location.pathname,
+            search: window.location.search,
+            hash: window.location.hash,
+            href: window.location.href
+        }
+    }
+
     /**
      * 
      *  Populate Id
@@ -189,6 +203,8 @@ export default class Recorder {
     /**
      *  The Event Generator
      */
+
+     
 
     generateEvent =(action:any)=> {
         let event:any = {

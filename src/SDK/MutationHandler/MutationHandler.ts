@@ -25,8 +25,6 @@ export default class MutationHandler {
                 }
             }
 
-            console.log(this.skippedMutations);
-
             switch(mutation.type) {
                 case eventTypes.characterData:
                     this.handleCharacterDataMutation(mutation);
