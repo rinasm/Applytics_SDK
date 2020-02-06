@@ -27,11 +27,11 @@ export default class RecorderHandler {
         this.aid = args.appId;
         this.cid = args.clientId;
 
-        // console.log('DOC Ready 1')
+        console.log('[ARC] Waiting for document ready state');
 
         (<any>window).docReady(()=> {
             loadJS('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js', ()=>{
-                console.log('Socket loaded');
+                console.log('[ARC] Socket loaded');
                 this.recorderData = [];
                 this.recorder = new Recorder({
                     sid: this.sid,
@@ -56,7 +56,7 @@ export default class RecorderHandler {
     }
 
     onConnect =()=> {
-        console.log('Connected to Socket');
+        console.log('[ARC] Connected to Socket');
         this.initiated = true;
         
         /**
