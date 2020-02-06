@@ -13,7 +13,7 @@ export default class MutationHandler {
 
 
     handleMutations =(mutations:any)=> {
-        let blacklistedNodes: Array<any> = this.getRecorder().getBlackListedNodes();
+        let blacklistedNodes: Array<any> = this.getRecorder().blacklistedNodes;
         mutations.forEach((mutation:any)=> {
             if(!mutation.target) 
                 return;
