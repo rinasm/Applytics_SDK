@@ -65,7 +65,7 @@ export default class MutationHandler {
         }
         for(let idx=0; idx < mutation.addedNodes.length; idx++) {
             this.getRecorder().populateId(mutation.addedNodes[idx]);
-            addedNodes.push(this.getRecorder().getHTML(mutation.addedNodes[idx]));
+            addedNodes.push(this.getRecorder().domParser.getHTML(mutation.addedNodes[idx]));
         }
         this.getRecorder().generateEvent({
             parent: mutation.target.rcid,

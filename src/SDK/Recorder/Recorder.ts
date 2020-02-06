@@ -38,13 +38,13 @@ export default class Recorder {
         this.sid = args.sid;
         this.aid = args.aid;
         this.blacklistedNodes = [];
+        this.domParser = new DomParser({ getRecorder: ()=> this });
         this.consoleHandler = new ConsoleHandler({ getRecorder: ()=> this })
         this.mutaionHandler = new MutationHandler({ getRecorder: ()=> this })
-        this.domParser = new DomParser({ getRecorder: ()=> this });
         this.windowEventHandler = new WindowEventHandler({ getRecorder: ()=> this });
         this.webRequestHandler = new WebRequestHandler({ getRecorder: ()=> this });
         this.metaDataHandler = new MetaDataHandler({ getRecorder: ()=> this });
-        console.log('[ARC] Recorder Initiated. V 0.1.4');
+        console.log('[ARC] Recorder Initiated. V 0.1.5');
     }    
 
     start =(node: any)=> {
