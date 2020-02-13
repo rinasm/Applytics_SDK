@@ -29,7 +29,7 @@ export default class RecorderHandler {
 
         console.log('[ARC] Waiting for document ready state');
 
-        (<any>window).docReady(()=> {
+        (window as any).docReady(()=> {
             loadJS('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js', ()=>{
                 console.log('[ARC] Socket loaded');
                 this.recorderData = [];
@@ -41,7 +41,7 @@ export default class RecorderHandler {
                 this.recorder.getLiveUpdate(this.onRecorderUpdater);
                 this.recorder.start(document.body);
 
-                let io = (<any>window).io;
+                let io = (window as any).io;
                 this.socket = io.connect(host, {transports:['websocket', 'polling']});
                 this.socket.once('connect', this.onConnect);
                 this.socket.once('reconnect', this.onConnect);
@@ -90,7 +90,7 @@ export default class RecorderHandler {
                     data: this.rcDataBuffer
                 };
                 this.packetIndex+=1;
-                if((<any>window).ARCDev || true) {
+                if((window as any).ARCDev || true) {
                     let size:any =  JSON.stringify(packet).length * 2;
                     console.log('[ARC] Packet size', size, 'Bytes, ', Math.ceil(size/1024), 'kb')
                 }

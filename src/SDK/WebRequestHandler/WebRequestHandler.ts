@@ -15,7 +15,7 @@ export default class WebRequestHandler {
          */
 
         let open = XMLHttpRequest.prototype.open;
-        (<any>XMLHttpRequest).prototype.open = function(method:any, url:string, async:boolean) {
+        (XMLHttpRequest as any).prototype.open = function(method:any, url:string, async:boolean) {
             let req = this;
             this.onprogress = function(d:any) {
                 if(req.readyState === 3) {
@@ -44,9 +44,9 @@ export default class WebRequestHandler {
             })
         }
 
-        (<any>window).__fetch__ = window.fetch;
-        (<any>window).fetch =(url:String, params:any)=> {
-            let req = (<any>window).__fetch__(url, params);
+        (window as any).__fetch__ = window.fetch;
+        (window as any).fetch =(url:String, params:any)=> {
+            let req = (window as any).__fetch__(url, params);
             handleFetch(req.then(), url, params);
             return req;
         }

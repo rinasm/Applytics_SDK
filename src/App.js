@@ -1,9 +1,9 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import './dist/applytics';
+import './SDK/index';
 
-window.startARC('testClient','titan2')
+window.startARC('rinas','Test Hover')
 
 function App() {
   return (

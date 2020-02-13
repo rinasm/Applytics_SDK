@@ -3,7 +3,7 @@ export default 'doc ready';
 (function(funcName:any, baseObj:any) {
     funcName = funcName || "docReady";
     baseObj = baseObj || window;
-    var readyList = <any>[];
+    var readyList = [] as any;
     var readyFired = false;
     var readyEventHandlersInstalled = false;
     
@@ -32,15 +32,15 @@ export default 'doc ready';
         } else {
             readyList.push({fn: callback, ctx: context});
         }
-        if (document.readyState === "complete" || (!(<any>document).attachEvent && document.readyState === "interactive")) {
+        if (document.readyState === "complete" || (!(document as any).attachEvent && document.readyState === "interactive")) {
             setTimeout(ready, 1);
         } else if (!readyEventHandlersInstalled) {
             if (document.addEventListener) {
                 document.addEventListener("DOMContentLoaded", ready, false);
                 window.addEventListener("load", ready, false);
-            } else if((<any>document).attachEvent) {
-                (<any>document).attachEvent("onreadystatechange", readyStateChange);
-                (<any>document).attachEvent("onload", ready);
+            } else if((document as any).attachEvent) {
+                (document as any).attachEvent("onreadystatechange", readyStateChange);
+                (document as any).attachEvent("onload", ready);
             } else {
                 console.warn('[ARC]: Failed to Trigger Doc ready')
             }

@@ -7,7 +7,7 @@ import DomParser from '../DomParser/DomParser';
 import WebRequestHandler from '../WebRequestHandler/WebRequestHandler';
 import MetaDataHandler from '../MetaDataHandler/MetaDataHandler';
 
-const MutationObserver = (<any>window).MutationObserver || (<any>window).WebKitMutationObserver || (<any>window).MozMutationObserver;
+const MutationObserver = (window as any).MutationObserver || (window as any).WebKitMutationObserver || (window as any).MozMutationObserver;
 
 let observer;
 let currentNodeId = 1;
@@ -15,7 +15,7 @@ let data: Array<any> = [];
 let dataBuffer: Array<any> = []
 let eventListener:any = null;
 let initialSnapshotSend: Boolean = false;
-(<any>window).rcData = []
+(window as any).rcData = []
 
 export default class Recorder {
 
@@ -32,6 +32,8 @@ export default class Recorder {
     windowEventHandler: any;
     webRequestHandler: any;
     metaDataHandler: any;
+    mouseMoveThreshold: any = 33;
+    lastMouseMoveEventGenerated: any = window.performance.now();
 
     constructor(args: any) {
         this.cid = args.cid;
@@ -131,7 +133,7 @@ export default class Recorder {
                 rcid: node.rcid
             }
         }
-        (<any>scroll).type = eventTypes.scroll;
+        (scroll as any).type = eventTypes.scroll;
         this.generateEvent(scroll);
     }
 
@@ -144,11 +146,14 @@ export default class Recorder {
     }
 
     handleMouseMove =(event:any)=> {
-        this.generateEvent({
-            mouseX: event.pageX - document.documentElement.scrollLeft,
-            mouseY: event.pageY - document.documentElement.scrollTop,
-            type: eventTypes.mouseMove
-        });     
+        if(window.performance.now() - this.lastMouseMoveEventGenerated > this.mouseMoveThreshold) {
+            this.lastMouseMoveEventGenerated = window.performance.now();
+            this.generateEvent({
+                mouseX: event.pageX - document.documentElement.scrollLeft,
+                mouseY: event.pageY - document.documentElement.scrollTop,
+                type: eventTypes.mouseMove
+            });     
+        }
     }
 
     handleMouseClick =(event:any)=> {
@@ -236,7 +241,7 @@ export default class Recorder {
     publishLiveUpdate =(event: any)=> {
         if(eventListener) {
             let msg:any = this.wrapEvent(event); 
-            (<any>window).rcData.push(msg);
+            (window as any).rcData.push(msg);
             eventListener(msg, data);
         }   
     }

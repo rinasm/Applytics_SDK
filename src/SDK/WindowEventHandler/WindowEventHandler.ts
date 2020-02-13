@@ -15,15 +15,15 @@ export default class WindowEventHandler {
         this.getRecorder =()=> args.getRecorder();
 
         const trackWindowCommand =(e: any)=> {
-            let code = (document.all) ? (<any>window.event).keyCode : e.which; 
+            let code = (document.all) ? (window.event as any).keyCode : e.which; 
             let cmd = null;
-            if (this.ctrlKeyStatus && code == 86) {
+            if (this.ctrlKeyStatus && code === 86) {
                 cmd = commands.PASTE;
-            } else if (this.ctrlKeyStatus && code == 67) { 
+            } else if (this.ctrlKeyStatus && code === 67) { 
                 cmd = commands.COPY;
-            } else if (this.ctrlKeyStatus && code == 83) { 
+            } else if (this.ctrlKeyStatus && code === 83) { 
                 cmd = commands.SAVE;
-            } else if (this.ctrlKeyStatus && code == 68) { 
+            } else if (this.ctrlKeyStatus && code === 68) { 
                 cmd = commands.BOOKMARK;
             }
 
@@ -68,11 +68,11 @@ export default class WindowEventHandler {
 
     checkConsoleStatus =(generateEvent=false)=> {
         let devtools: Function = function(){};
-        (<any>devtools).toString = function() { this.opened = true }
+        (devtools as any).toString = function() { this.opened = true }
         console.log('%c', devtools);
 
         let prevStatus = this.getRecorder().consoleStatus || false;
-        let currentStatus = (<any>devtools).opened &&
+        let currentStatus = (devtools as any).opened &&
                             ((window.outerHeight - window.innerHeight > 150) || 
                             (window.outerWidth - window.innerWidth > 150));
         if(prevStatus !== currentStatus) {

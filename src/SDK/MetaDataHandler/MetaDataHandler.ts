@@ -17,7 +17,7 @@ export default class MetaDataHandler {
             core: navigator.hardwareConcurrency,
             cookieEnabled: navigator.cookieEnabled,
             language: navigator.language,
-            deviceMemory: (<any>navigator).deviceMemory,
+            deviceMemory: (navigator as any).deviceMemory,
             isTouchDevice: this.getIsTouchDevice(),
             referrer:document.referrer,
             appVersion: navigator.appVersion,

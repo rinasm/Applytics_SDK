@@ -10,7 +10,9 @@ export default class ConsoleHandler {
 
     constructor(args: any) {
         this.getRecorder =()=> args.getRecorder();
-        this.trackAllConsoleActivity();
+        if(window.location.host.indexOf('localhost') === -1) {
+            this.trackAllConsoleActivity();
+        }
     }
 
 
@@ -30,25 +32,25 @@ export default class ConsoleHandler {
         let tempConsole = {};
         const trackConsole = this.trackConsole;
         for (let idx in consoleTrackList) {
-            if (typeof (<any>console)[consoleTrackList[idx]] === 'function') {
-                (<any>tempConsole)[consoleTrackList[idx]] = (<any>console)[consoleTrackList[idx]];
+            if (typeof (console as any)[consoleTrackList[idx]] === 'function') {
+                (tempConsole as any)[consoleTrackList[idx]] = (console as any)[consoleTrackList[idx]];
             }
         } 
         this.tempConsole = tempConsole;
         const cloneConsole = function (key:any = null) {
             if (key !== null && key in tempConsole) {
-                (<any>console)[key] = function () {
+                (console as any)[key] = function () {
                     trackConsole(arguments, key);
-                    (<any>console)[key] = Function.prototype.bind.call((<any>tempConsole)[key], console);
-                    (<any>console)[key].apply(console, arguments);
+                    (console  as any)[key] = Function.prototype.bind.call((tempConsole  as any)[key], console);
+                    (console  as any)[key].apply(console, arguments);
                     cloneConsole(key);
                 };
             } else if (key === null) {
                 for (let idx in tempConsole) {
-                    (<any>console)[idx] = function () {
+                    (console  as any)[idx] = function () {
                         trackConsole(arguments, idx);
-                        (<any>console)[idx] = Function.prototype.bind.call((<any>tempConsole)[idx], console);
-                        (<any>console)[idx].apply(console, arguments);
+                        (console  as any)[idx] = Function.prototype.bind.call((tempConsole  as any)[idx], console);
+                        (console  as any)[idx].apply(console, arguments);
                         cloneConsole(idx);
                     };
                 }

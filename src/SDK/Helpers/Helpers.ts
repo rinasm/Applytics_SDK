@@ -13,7 +13,7 @@ export const generateSID =()=> {
 }
 
 export const getSID =()=> {
-    let sid = (<any>window).apprc_sid || null;
+    let sid = (window as any).apprc_sid || null;
     if(sid === null) {
         sid = generateSID()
     }

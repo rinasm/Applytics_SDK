@@ -6,7 +6,7 @@ const startARC=(clientId:String, appId:String)=> {
     new RecorderHandler({clientId, appId});
 }
 
-(<any>window).startARC = startARC;
+(window as any).startARC = startARC;
 
 
 export default startARC;
