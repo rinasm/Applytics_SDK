@@ -34,15 +34,15 @@ export default class DomParser {
             try {
                 for(let jdx=0; jdx<(document.styleSheets[idx] as any).rules.length; jdx++) {
                     rule = (document.styleSheets[idx] as any).rules[jdx].cssText;
-                    for(let kdx in psudoStates) {
-                        if(rule.indexOf(psudoStates[kdx].state) !== -1) {
-                            this.cssPsudoStates.push({
-                                selector: rule.split('{')[0].replace(psudoStates[kdx].state, '').trim(),
-                                type: psudoStateTypes[psudoStates[kdx].type]
-                            })
-                            rule = rule.replace(psudoStates[kdx].state, psudoStates[kdx].replaceTo);
-                        }
-                    }
+                    // for(let kdx in psudoStates) {
+                    //     if(rule.indexOf(psudoStates[kdx].state) !== -1) {
+                    //         this.cssPsudoStates.push({
+                    //             selector: rule.split('{')[0].replace(psudoStates[kdx].state, '').trim(),
+                    //             type: psudoStateTypes[psudoStates[kdx].type]
+                    //         })
+                    //         rule = rule.replace(psudoStates[kdx].state, psudoStates[kdx].replaceTo);
+                    //     }
+                    // }
                     this.cssRules += rule;
                 }
             } catch (e) { 
