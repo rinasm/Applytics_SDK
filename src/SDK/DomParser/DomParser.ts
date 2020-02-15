@@ -3,6 +3,7 @@ import {
     blacklistedElByClass,
     blacklistedAttrs
 } from '../Constants/Constants';
+import XHR from '../Helpers/XHR';
  
 export default class DomParser {
 
@@ -12,6 +13,24 @@ export default class DomParser {
     readImageSrc: Boolean = false;
 
     // search for class
+
+    fetchAndRecordStyle =(url: any)=> {
+        console.log('[ARC] Fetching StyleSheet', url);
+        XHR.get(url, ()=>{})
+            .then(css=> {
+                console.log('[ARC] Fetching StyleSheet Successfull', url);
+                this.getRecorder().generateEvent({
+                    type: eventTypes.styleSheetString,
+                    css
+                });
+            }, err=> {
+                console.log('[ARC] Fetching StyleSheet Failed', url, err);
+                this.getRecorder().generateEvent({
+                    type: eventTypes.styleSheetString,
+                    err
+                });
+            })
+    }
 
     recordStyle =()=> {
         this.cssRules = '';
@@ -23,11 +42,12 @@ export default class DomParser {
             //         this.cssRules += rule;
             //     }
             // } catch (e) { 
-                this.getRecorder().generateEvent({
-                    type: eventTypes.styleSheetsLoadReq,
-                    href: document.styleSheets[idx].href
-                });
+                // this.getRecorder().generateEvent({
+                //     type: eventTypes.styleSheetsLoadReq,
+                //     href: document.styleSheets[idx].href
+                // });
             // }
+            this.fetchAndRecordStyle(document.styleSheets[idx].href)
         }
     }
 

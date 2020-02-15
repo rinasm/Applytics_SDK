@@ -16,7 +16,9 @@ export const eventTypes = {
     windowResize: 'windowResize',
     consoleStatusChanged: 'consoleStatusChanged',
     commandExecuted: 'commandExecuted',
-    hashChanged: 'hashChanged'
+    hashChanged: 'hashChanged',
+    styleSheetString: 'styleSheetString',
+    error: 'error',
 }
 export const commands = {
     PASTE: "PASTE",
