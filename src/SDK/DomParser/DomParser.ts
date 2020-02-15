@@ -3,20 +3,7 @@ import {
     blacklistedElByClass,
     blacklistedAttrs
 } from '../Constants/Constants';
-
-let psudoStateTypes: any = {
-    hover: 'hover'
-}
-
-let psudoStates: any = []
-for(let key in psudoStateTypes) {
-    psudoStates.push({
-        state: ':' + psudoStateTypes[key],
-        replaceTo: 'ARC_' + psudoStateTypes[key].toUpperCase(),
-        type: key
-    })
-}
-
+ 
 export default class DomParser {
 
     getRecorder: Function;
@@ -112,8 +99,7 @@ export default class DomParser {
         this.getRecorder().generateEvent({
             type: eventTypes.snapshot, 
             dom: clone, 
-            cssRules: this.cssRules, 
-            cssPsudoStates: this.cssPsudoStates,
+            cssRules: this.cssRules,  
             initial,
             screenWidth: window.innerWidth,
             screenHeight: window.innerHeight,
