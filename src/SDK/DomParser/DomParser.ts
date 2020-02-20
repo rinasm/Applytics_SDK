@@ -15,16 +15,14 @@ export default class DomParser {
     // search for class
 
     fetchAndRecordStyle =(url: any)=> {
-        console.log('[ARC] Fetching StyleSheet', url);
         XHR.get(url, ()=>{})
-            .then(css=> {
-                console.log('[ARC] Fetching StyleSheet Successfull', url);
+            .then(css=> { 
                 this.getRecorder().generateEvent({
                     type: eventTypes.styleSheetString,
                     css
                 });
             }, err=> {
-                console.log('[ARC] Fetching StyleSheet Failed', url, err);
+                console.error('[ARC] Fetching StyleSheet Failed', url, err);
                 this.getRecorder().generateEvent({
                     type: eventTypes.styleSheetString,
                     err
@@ -47,7 +45,9 @@ export default class DomParser {
                 //     href: document.styleSheets[idx].href
                 // });
             // }
-            this.fetchAndRecordStyle(document.styleSheets[idx].href)
+            if(document.styleSheets[idx].href) {
+                this.fetchAndRecordStyle(document.styleSheets[idx].href)
+            }
         }
     }
 

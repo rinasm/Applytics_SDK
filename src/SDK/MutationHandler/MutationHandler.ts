@@ -77,12 +77,22 @@ export default class MutationHandler {
         })
     }
 
+    convertToAbsolutePath =(path:any)=> {
+        if(path==null)
+            return 'nopath';
+        return new URL(path, window.location.origin).href; 
+    }
+
     handleAttributes =(mutation:any)=> {
+        let value = mutation.target.getAttribute(mutation.attributeName);
+        if(mutation.attributeName === 'src') {
+            value = this.convertToAbsolutePath(value);
+        }
         this.getRecorder().generateEvent({
             rcid: mutation.target.rcid,
             type: eventTypes.attributes,
             attributeName: mutation.attributeName,
-            attributeValue: mutation.target.getAttribute(mutation.attributeName)
+            attributeValue: value
         });
     }
 

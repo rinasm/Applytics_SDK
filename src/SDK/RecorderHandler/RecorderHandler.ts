@@ -100,7 +100,7 @@ export default class RecorderHandler {
         }, 1000);
     }
 
-    getPID =()=> generateSID()
+    getPID =()=> window.location.pathname
 
     sendToServer =(event: any)=> {
         if(!this.initiated)
