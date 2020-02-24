@@ -27,3 +27,8 @@ export function loadJS(file:any, callback:any) {
     jsElm.onload = callback;
     document.body.appendChild(jsElm);
 }
+
+const urlParserKey = '[^]'; 
+
+
+export const parseURL =(url:any)=> (url||'').split('.').join(urlParserKey)

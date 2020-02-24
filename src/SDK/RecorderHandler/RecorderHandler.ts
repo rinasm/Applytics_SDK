@@ -1,7 +1,7 @@
 import '../Helpers/DocReady';
-import {getSID, loadJS, generateSID} from '../Helpers/Helpers';
+import {getSID, loadJS, parseURL} from '../Helpers/Helpers';
 import Recorder from '../Recorder/Recorder';
-import {host} from '../Constants/Constants';
+import {host} from '../Constants/Constants'; 
 
 interface RHArgs {
     clientId: String,
@@ -129,13 +129,14 @@ export default class RecorderHandler {
             createdAt: Date.now(),
             metaData: {
               browserName: meta.browser,
+              pageURL: parseURL(window.location.href),
               os: meta.os,
               cpuCore: meta.core,
               deviceMemory: meta.deviceMemory,
               screenType: meta.isTouchDevice,
               language: meta.language,
               cookieEnabled: meta.cookieEnabled,
-              referrer: meta.referrer,
+              referrer: parseURL(meta.referrer || null),
               browserVersion: meta.browser,
               osVersion: meta.os,
               userAgent: navigator.userAgent
