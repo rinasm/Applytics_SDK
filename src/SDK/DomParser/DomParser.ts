@@ -34,19 +34,19 @@ export default class DomParser {
         this.cssRules = '';
         let rule: string;
         for(let idx=0; idx<document.styleSheets.length; idx++) {
-            // try {
-            //     for(let jdx=0; jdx<(document.styleSheets[idx] as any).rules.length; jdx++) {
-            //         rule = (document.styleSheets[idx] as any).rules[jdx].cssText; 
-            //         this.cssRules += rule;
-            //     }
-            // } catch (e) { 
+            try {
+                for(let jdx=0; jdx<(document.styleSheets[idx] as any).rules.length; jdx++) {
+                    rule = (document.styleSheets[idx] as any).rules[jdx].cssText; 
+                    this.cssRules += rule;
+                }
+            } catch (e) { 
                 // this.getRecorder().generateEvent({
                 //     type: eventTypes.styleSheetsLoadReq,
                 //     href: document.styleSheets[idx].href
                 // });
-            // }
-            if(document.styleSheets[idx].href) {
-                this.fetchAndRecordStyle(document.styleSheets[idx].href)
+                if(document.styleSheets[idx].href) {
+                    this.fetchAndRecordStyle(document.styleSheets[idx].href)
+                }
             }
         }
     }
