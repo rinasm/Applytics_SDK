@@ -78,7 +78,6 @@ export default class RecorderHandler {
          */
         this.socketInter = setInterval(()=> {
             if(this.rcDataBuffer && this.rcDataBuffer.length) {
-                console.log('[ARC] Sending Data', this.rcDataBuffer.length);
                 let packet = {
                     sid: this.sid,
                     cid: this.cid,
@@ -90,9 +89,11 @@ export default class RecorderHandler {
                     data: this.rcDataBuffer
                 };
                 this.packetIndex+=1;
-                if((window as any).ARCDev) {
+                if(localStorage.getItem('ARCDev')) {
                     let size:any =  JSON.stringify(packet).length * 2;
+                    console.log('[ARC] Sending Data', this.rcDataBuffer.length);
                     console.log('[ARC] Packet size', size, 'Bytes, ', Math.ceil(size/1024), 'kb')
+                    console.log(packet)
                 }
                 this.socket.emit('sessionReciver', packet);
                 this.rcDataBuffer = [];
