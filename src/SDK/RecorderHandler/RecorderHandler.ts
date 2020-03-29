@@ -90,7 +90,12 @@ export default class RecorderHandler {
                 };
                 this.packetIndex+=1;
                 if(localStorage.getItem('ARCDev')) {
-                    let size:any =  JSON.stringify(packet).length * 2;
+                    let size:any = 0;
+                    try{
+                        size =  JSON.stringify(packet).length * 2
+                    } catch(e) {
+                        console.log('Circulat Obj');
+                    }
                     console.log('[ARC] Sending Data', this.rcDataBuffer.length);
                     console.log('[ARC] Packet size', size, 'Bytes, ', Math.ceil(size/1024), 'kb')
                     console.log(packet);
