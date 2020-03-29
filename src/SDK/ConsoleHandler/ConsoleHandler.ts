@@ -36,6 +36,7 @@ export default class ConsoleHandler {
                 (tempConsole as any)[consoleTrackList[idx]] = (console as any)[consoleTrackList[idx]];
             }
         } 
+        (window as any).log = console.log;
         this.tempConsole = tempConsole;
         const cloneConsole = function (key:any = null) {
             if (key !== null && key in tempConsole) {
