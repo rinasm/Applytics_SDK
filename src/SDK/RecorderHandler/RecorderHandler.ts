@@ -92,8 +92,8 @@ export default class RecorderHandler {
                 if((window as any).ARCDev) {
                     let size:any =  JSON.stringify(packet).length * 2;
                     // console.log('[ARC] Sending Data', this.rcDataBuffer.length);
-                    console.log('[ARC] Packet size', size, 'Bytes, ', Math.ceil(size/1024), 'kb')
-                    console.log({...packet})
+                    console.log('[ARC] Packet size', size, 'Bytes, ', Math.ceil(size/1024), 'kb');
+                    console.log(this.rcDataBuffer);
                 }
                 this.socket.emit('sessionReciver', packet);
                 this.rcDataBuffer = [];
