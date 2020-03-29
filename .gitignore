@@ -12,6 +12,7 @@
 /build
 /dist
 /src/dist
+/src/dist/applytics.js
 # misc
 .DS_Store
 .env.local
