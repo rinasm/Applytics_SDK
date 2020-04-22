@@ -63,7 +63,7 @@ export default class RecorderHandler {
          *  Sending Session Meta
          */
         let sessionMetaData = this.getSessionMeta();
-        this.socket.emit('sessionReciver', sessionMetaData);
+        this.socket.emit('beacon', sessionMetaData);
 
         /**
          *  Sending Buffered Data
