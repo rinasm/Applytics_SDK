@@ -1,4 +1,4 @@
-export const host = 'https://test.applytics.in';
+export const host = 'https://data.applytics.in';
 export const eventTypes = {
     snapshot: 'snapshot',
     characterData: 'characterData',
