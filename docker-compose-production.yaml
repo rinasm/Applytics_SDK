@@ -1,8 +1,7 @@
 version: '3.7'
 services:
   sdk:
-    image: sdk-image
-    build: .
+    image: gcr.io/applytics/sdk-image:latest
     container_name: sdk-container
     restart: always
     ports:
