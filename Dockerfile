@@ -9,7 +9,7 @@ RUN npm run build
 # Go container to make a server build with frontend files
 FROM golang:alpine AS goBuilder
 WORKDIR /go/src/sdk
-COPY --from=nodebuilder /usr/src/app/src/dist/applytics.js main.go ./
+COPY --from=nodebuilder /usr/src/app/src/dist/applytics.js /usr/src/app/main.go ./
 CMD ["ls"]  
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags '-w -s' -a -installsuffix cgo -o sdk
 
