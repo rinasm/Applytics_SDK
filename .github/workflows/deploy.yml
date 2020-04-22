@@ -41,7 +41,7 @@ jobs:
       env:
         HOST: applytics.in
         USERNAME: git_bot
-        KEY: ${{ secrets.PRIVATE_KEY }}
+        KEY: ${{ secrets.SERVER_PRIVATE_KEY }}
       with:
         source: "docker-compose-production.yaml"
         target: "sdk"
@@ -52,5 +52,5 @@ jobs:
         host: applytics.in
         username: git_bot
         port: 22
-        key: ${{ secrets.PRIVATE_KEY }}
+        key: ${{ secrets.SERVER_PRIVATE_KEY }}
         script: cd sdk && sudo docker pull gcr.io/applytics/sdk-image:latest && sudo docker-compose -f docker-compose-production.yaml up -d
