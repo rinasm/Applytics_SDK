@@ -95,7 +95,7 @@ export default class RecorderHandler {
                     (window as any).log('[ARC] Packet size', size, 'Bytes, ', Math.ceil(size/1024), 'kb');
                     (window as any).log(packet);
                 }
-                this.socket.emit('sessionReciver', packet);
+                this.socket.emit('beacon', packet);
                 this.rcDataBuffer = [];
             }
         }, 1000);
