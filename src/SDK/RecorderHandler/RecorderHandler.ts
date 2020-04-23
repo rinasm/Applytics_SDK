@@ -60,12 +60,14 @@ export default class RecorderHandler {
         console.log('[ARC] Connected to Socket');
         this.initiated = true;
         this.socket.emit('beacon', "test yo1");
+        console.log("Socket connection status", this.socket.connected);
         /**
          *  Sending Session Meta
          */
         this.socket.emit('beacon', "test yo2");
         let sessionMetaData = this.getSessionMeta();
         this.socket.emit('beacon', sessionMetaData);
+        console.log("Socket connection status", this.socket.connected);
         this.socket.emit('beacon', "test yo2");
         /**
          *  Sending Buffered Data
