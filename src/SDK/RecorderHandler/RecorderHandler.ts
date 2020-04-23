@@ -42,7 +42,7 @@ export default class RecorderHandler {
                 this.recorder.start(document.body);
 
                 let io = (window as any).io;
-                this.socket = io.connect(host, {transports:['websocket', 'polling']});
+                this.socket = io.connect(host, {transports:['websocket']});
                 this.socket.once('connect', this.onConnect);
                 this.socket.once('reconnect', this.onConnect);
                 this.socket.once('disconnect', this.onDisconnect);
