@@ -59,16 +59,15 @@ export default class RecorderHandler {
     onConnect =()=> {
         console.log('[ARC] Connected to Socket');
         this.initiated = true;
-        this.socket.emit('beacon', "test yo1");
         console.log("Socket connection status", this.socket.connected);
+        
         /**
          *  Sending Session Meta
          */
-        this.socket.emit('beacon', "test yo2");
+
         let sessionMetaData = this.getSessionMeta();
         this.socket.emit('beacon', JSON.stringify(sessionMetaData));
-        console.log("Socket connection status", this.socket.connected);
-        this.socket.emit('beacon', "test yo3");
+
         /**
          *  Sending Buffered Data
          */
@@ -99,8 +98,7 @@ export default class RecorderHandler {
                     (window as any).log('[ARC] Packet size', size, 'Bytes, ', Math.ceil(size/1024), 'kb');
                     (window as any).log(packet);
                 }
-                console.log("Socket connection status", this.socket.connected);
-                this.socket.emit('beacon', packet);
+                this.socket.emit('beacon', JSON.stringify(packet));
                 this.rcDataBuffer = [];
             }
         }, 1000);
