@@ -68,7 +68,7 @@ export default class RecorderHandler {
         let sessionMetaData = this.getSessionMeta();
         this.socket.emit('beacon', sessionMetaData);
         console.log("Socket connection status", this.socket.connected);
-        this.socket.emit('beacon', "test yo2");
+        this.socket.emit('beacon', "test yo3");
         /**
          *  Sending Buffered Data
          */
