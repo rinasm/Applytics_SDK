@@ -45,7 +45,7 @@ export default class RecorderHandler {
                 this.socket = io.connect(host, {transports:['websocket']});
                 this.socket.once('connect', this.onConnect);
                 this.socket.once('reconnect', this.onConnect);
-                this.socket.once('disconnect', this.onDisconnect);
+                // this.socket.once('disconnect', this.onDisconnect);
             })
         }, window)
 
