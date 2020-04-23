@@ -59,7 +59,7 @@ export default class RecorderHandler {
     onConnect =()=> {
         console.log('[ARC] Connected to Socket');
         this.initiated = true;
-        
+        this.socket.emit('beacon', "test yo");
         /**
          *  Sending Session Meta
          */
