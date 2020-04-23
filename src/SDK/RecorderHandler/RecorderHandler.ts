@@ -96,6 +96,7 @@ export default class RecorderHandler {
                     (window as any).log('[ARC] Packet size', size, 'Bytes, ', Math.ceil(size/1024), 'kb');
                     (window as any).log(packet);
                 }
+                console.log("Socket connection status", this.socket.connected);
                 this.socket.emit('beacon', packet);
                 this.rcDataBuffer = [];
             }
