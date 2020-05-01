@@ -114,11 +114,11 @@ export default class RecorderHandler {
         if(!this.initiated)
             return;
 
-        if(event && event.type === eventTypes.snapshot) {
-            this.emitToSocket(event.type, event);
-        } else if(event) {
-            this.rcDataBuffer.push(event);
-        }
+        // if(event && event.type === eventTypes.snapshot && ) {
+        //     this.emitToSocket(event.type, event);
+        // } else if(event) {
+        //     this.rcDataBuffer.push(event);
+        // }
     }
 
     onRecorderUpdater =(event:any)=> {
