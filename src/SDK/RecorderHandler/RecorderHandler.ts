@@ -1,7 +1,7 @@
 import '../Helpers/DocReady';
 import {getSID, loadJS, parseURL} from '../Helpers/Helpers';
 import Recorder from '../Recorder/Recorder';
-import {host} from '../Constants/Constants'; 
+import {host, eventTypes} from '../Constants/Constants'; 
 
 interface RHArgs {
     clientId: String,
@@ -81,27 +81,31 @@ export default class RecorderHandler {
          */
         this.socketInter = setInterval(()=> {
             if(this.rcDataBuffer && this.rcDataBuffer.length) {
-                let packet = {
-                    sid: this.sid,
-                    cid: this.cid,
-                    aid: this.aid,
-                    pid: this.getPID(),
-                    index: this.packetIndex,
-                    type: 'event',
-                    timestamp: Date.now(),
-                    data: this.rcDataBuffer
-                };
-                this.packetIndex+=1;
-                if((window as any).ARCDev) {
-                    let size:any =  JSON.stringify(packet).length * 2;
-                    (window as any).log('[ARC] Sending Data', this.rcDataBuffer.length);
-                    (window as any).log('[ARC] Packet size', size, 'Bytes, ', Math.ceil(size/1024), 'kb');
-                    (window as any).log(packet);
-                }
-                this.socket.emit('beacon', JSON.stringify(packet));
+                this.emitToSocket('event', this.rcDataBuffer);
                 this.rcDataBuffer = [];
             }
         }, 1000);
+    }
+
+    emitToSocket =(type:String, data:any)=> {
+        let packet = {
+            sid: this.sid,
+            cid: this.cid,
+            aid: this.aid,
+            pid: this.getPID(),
+            index: this.packetIndex,
+            type,
+            timestamp: Date.now(),
+            data
+        };
+        this.packetIndex+=1;
+        if((window as any).ARCDev) {
+            let size:any =  JSON.stringify(packet).length * 2;
+            (window as any).log('[ARC] Sending Data', this.rcDataBuffer.length);
+            (window as any).log('[ARC] Packet size', size, 'Bytes, ', Math.ceil(size/1024), 'kb');
+            (window as any).log(packet);
+        }
+        this.socket.emit('beacon', JSON.stringify(packet));
     }
 
     getPID =()=> window.location.pathname
@@ -110,7 +114,11 @@ export default class RecorderHandler {
         if(!this.initiated)
             return;
 
-        this.rcDataBuffer.push(event);
+        if(event && event.type === eventTypes.snapshot) {
+            this.emitToSocket(event.type, event);
+        } else if(event) {
+            this.rcDataBuffer.push(event);
+        }
     }
 
     onRecorderUpdater =(event:any)=> {
