@@ -45,8 +45,8 @@ export default class RecorderHandler {
                 this.socket = io.connect(host, {
                      query: {
                        sid: this.sid,
-                       aid: this.aid
-                    }
+                       aid: this.aid,
+                    },
                     transports:['websocket'],
                 });
                 this.socket.once('connect', this.onConnect);
