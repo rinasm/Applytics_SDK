@@ -43,7 +43,10 @@ export default class RecorderHandler {
 
                 let io = (window as any).io;
                 this.socket = io(host, {
-                    query:'loggeduser=user1',
+                    query:{
+                        sKey: this.sid,
+                        aKey: this.aid,
+                    },
                     transports: ['websocket'],
                 })
                 this.socket.once('connect', this.onConnect);
