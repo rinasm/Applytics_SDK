@@ -42,7 +42,8 @@ export default class RecorderHandler {
                 this.recorder.start(document.body);
 
                 let io = (window as any).io;
-                this.socket = io.connect(host+`sid=${this.sid}`, {
+                this.socket = io.connect(host,{
+                     query: { "sid":"65" },
                     transports:['websocket'],
                 });
                 this.socket.once('connect', this.onConnect);
