@@ -1,4 +1,4 @@
-export const host = 'https://beacon.applytics.in/';
+export const host = 'https://beacon.applytics.in';
 export const eventTypes = {
     snapshot: 'snapshot',
     characterData: 'characterData',
