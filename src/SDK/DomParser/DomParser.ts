@@ -102,7 +102,11 @@ export default class DomParser {
             /**
              *  Event Binding
              */
-            let style = window.getComputedStyle(node);
+            let style:any = ''; 
+            
+            try {
+                style = window.getComputedStyle(node);
+            } catch (e) {};
             if(['', 'X', 'Y'].map(d=>['scroll', 'auto'].indexOf((style as any)['overflow'+d]) !== -1).filter(d=>d).length) {
                 this.getRecorder().bindScroll(node);
             }
