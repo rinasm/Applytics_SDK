@@ -8,44 +8,54 @@ import XHR from '../Helpers/XHR';
 export default class DomParser {
 
     getRecorder: Function;
-    cssRules: String = ''; 
+    cssRules: any = {}; 
     inputNodeNames: Array<String> = ['TEXTAREA', 'INPUT']; 
     readImageSrc: Boolean = false;
 
     // search for class
 
-    fetchAndRecordStyle =(url: any)=> {
+    fetchAndRecordStyle =(url: any, idx:any)=> {
         XHR.get(url, ()=>{})
             .then(css=> { 
                 this.getRecorder().generateEvent({
                     type: eventTypes.styleSheetString,
+                    href: url,
+                    index: idx,
                     css
                 });
             }, err=> {
                 console.error('[ARC] Fetching StyleSheet Failed', url, err);
                 this.getRecorder().generateEvent({
                     type: eventTypes.styleSheetString,
+                    index: idx,
+                    href: url,
                     err
                 });
             })
     }
 
     recordStyle =()=> {
-        this.cssRules = '';
+        this.cssRules = {};
         let rule: string;
         for(let idx=0; idx<document.styleSheets.length; idx++) {
             try {
+                this.cssRules[idx] = {
+                    rules: '',
+                    index: idx,
+                    href: document.styleSheets[idx].href
+                }
                 for(let jdx=0; jdx<(document.styleSheets[idx] as any).rules.length; jdx++) {
                     rule = (document.styleSheets[idx] as any).rules[jdx].cssText; 
-                    this.cssRules += rule;
+                    this.cssRules[idx].rules += rule;
                 }
             } catch (e) { 
                 // this.getRecorder().generateEvent({
                 //     type: eventTypes.styleSheetsLoadReq,
                 //     href: document.styleSheets[idx].href
                 // });
+                delete this.cssRules[idx];
                 if(document.styleSheets[idx].href) {
-                    this.fetchAndRecordStyle(document.styleSheets[idx].href)
+                    this.fetchAndRecordStyle(document.styleSheets[idx].href, idx)
                 }
             }
         }
