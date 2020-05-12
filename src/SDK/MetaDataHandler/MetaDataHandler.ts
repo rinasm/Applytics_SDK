@@ -48,12 +48,12 @@ export default class MetaDataHandler {
     }
 
     getDeviceType =()=> {
-        if(this.isMobileDevice()) {
-            return 'mobile';
-        } 
         if(this.isTablet()) {
             return 'tablet';
         }
+        if(this.isMobileDevice()) {
+            return 'mobile';
+        } 
         return 'desktop';
     }
 
