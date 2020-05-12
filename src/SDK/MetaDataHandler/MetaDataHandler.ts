@@ -19,9 +19,10 @@ export default class MetaDataHandler {
             language: navigator.language,
             deviceMemory: (navigator as any).deviceMemory,
             isTouchDevice: this.getIsTouchDevice(),
-            referrer:document.referrer,
+            referrer: this.getReferrer(),
             appVersion: navigator.appVersion,
-            userAgent: navigator.userAgent
+            userAgent: navigator.userAgent,
+            deviceType: this.getDeviceType()
         };
         if(generateEvent)
             this.getRecorder().generateEvent(event)
@@ -29,10 +30,31 @@ export default class MetaDataHandler {
         return event;
     }
 
+    getReferrer =()=> ((document.referrer||'').split('//')[1] || '').split('/')[0] || '';
+
     getIsTouchDevice() {
         return  'ontouchstart' in document.documentElement || (('ontouchstart' in window)
             || (navigator.maxTouchPoints > 0)
             || (navigator.msMaxTouchPoints > 0))
+    }
+
+    isMobileDevice() {
+        return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+    };
+
+    isTablet() {
+        const userAgent = navigator.userAgent.toLowerCase();
+        return /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
+    }
+
+    getDeviceType =()=> {
+        if(this.isMobileDevice()) {
+            return 'mobile';
+        } 
+        if(this.isTablet()) {
+            return 'tablet';
+        }
+        return 'desktop';
     }
 
     getBrowser(){
@@ -48,7 +70,13 @@ export default class MetaDataHandler {
         }
         M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
         if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1]);
-        return M.join(' ');
+        let browser = M.join(' ');
+        if(browser && browser.length > 10) {
+            if(browser.indexOf('BingPreview') !== -1) {
+                return 'Bing Preview SG'
+            }
+        }
+        return browser || ''
     }
 
     getOS() {
