@@ -10,9 +10,13 @@ export default class MetaDataHandler {
     }
 
     getAllMetaData =(generateEvent=true)=> {
+        let browserMeta  = this.getBrowser().split(' ');
+        let browser = browserMeta.slice(0, Math.max(browserMeta.length-1, 1)).join(' ');
+        let browserVersion = browserMeta[Math.max(1, browserMeta.length-1)] || 'NA'
         let event = {
             type: eventTypes.browserMeta,
-            browser: this.getBrowser(),
+            browser,
+            browserVersion,
             os: this.getOS(),
             core: navigator.hardwareConcurrency,
             cookieEnabled: navigator.cookieEnabled,
@@ -75,6 +79,7 @@ export default class MetaDataHandler {
             if(browser.indexOf('BingPreview') !== -1) {
                 return 'Bing Preview SG'
             }
+            return 'Unknown Browser';
         }
         return browser || ''
     }

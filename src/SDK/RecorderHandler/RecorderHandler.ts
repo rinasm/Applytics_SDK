@@ -143,7 +143,7 @@ export default class RecorderHandler {
             cid: this.cid,
             aid: this.aid,
             type:'session',
-            deviceType: 'desktop',
+            deviceType: meta.deviceType,
             createdAt: Date.now(),
             metaData: {
               browserName: meta.browser,
