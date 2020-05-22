@@ -14,7 +14,15 @@ export const generateSID =()=> {
 
 export const getSID =()=> {
     let sid = (window as any).apprc_sid || null;
-    if(sid === null) {
+    let arcsid;
+    try {
+        arcsid = JSON.parse((localStorage.getItem('arcsid') as any) || {}) as any
+    } catch (e) {}
+    if(arcsid && arcsid.createdAt && Date.now() - arcsid.createdAt < 15000 && document.referrer !== window.location.href) {
+        sid = arcsid.sid
+        console.log('[ARC] : Navigation Detected');
+    }
+    if(sid == null) {
         sid = generateSID()
     }
     return sid;

@@ -55,6 +55,24 @@ export default class RecorderHandler {
             })
         }, window)
 
+
+        window.onbeforeunload =()=> {
+            this.setSessionDataToLS();
+        }
+    }
+
+    getARCSIDMeta =(onClose: any)=> {
+        return {
+            createdAt: Date.now(),
+            location: window.location,
+            sid: this.sid,
+            onClose,
+        }
+    }
+
+    setSessionDataToLS =()=> {
+        let meta = this.getARCSIDMeta(true) as any;
+        localStorage.setItem('arcsid', meta);
     }
  
     onDisconnect =()=> {
@@ -90,6 +108,7 @@ export default class RecorderHandler {
                 this.emitToSocket('event', this.rcDataBuffer);
                 this.rcDataBuffer = [];
             }
+            this.setSessionDataToLS();
         }, 1000);
     }
 
