@@ -14,9 +14,9 @@ export const generateSID =()=> {
 
 export const getSID =()=> {
     let sid = (window as any).apprc_sid || null;
-    let arcsid;
+    let arcsid = localStorage.getItem('arcsid') as any;
     try {
-        arcsid = JSON.parse((localStorage.getItem('arcsid') as any) || {}) as any
+        arcsid = JSON.parse(arcsid) as any
     } catch (e) {}
     if(arcsid && arcsid.createdAt && Date.now() - arcsid.createdAt < 15000 && document.referrer !== window.location.href) {
         sid = arcsid.sid
