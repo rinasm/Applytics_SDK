@@ -71,8 +71,11 @@ export default class RecorderHandler {
     }
 
     setSessionDataToLS =()=> {
+        if(!this.sid)
+            return;
+            
         let meta = this.getARCSIDMeta(true) as any;
-        localStorage.setItem('arcsid', meta);
+        localStorage.setItem('arcsid', JSON.stringify(meta));
     }
  
     onDisconnect =()=> {
