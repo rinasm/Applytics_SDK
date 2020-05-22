@@ -10,7 +10,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       
-#       docker build
     - name: Docker-compose build image
       run: docker-compose build
       
