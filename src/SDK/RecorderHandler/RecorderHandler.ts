@@ -59,7 +59,17 @@ export default class RecorderHandler {
 
         window.onbeforeunload =()=> {
             let arcbuffer = this.emitToSocket('event', this.rcDataBuffer, false);
-            localStorage.setItem('arcbuffer', arcbuffer);
+            let current_arcbuffer = (localStorage.getItem('arcbuffer') || '[]') as any;
+            try {
+                current_arcbuffer = JSON.parse(current_arcbuffer)
+            } catch (e) {
+                current_arcbuffer = [];
+            }
+            if(!current_arcbuffer || !current_arcbuffer.length) {
+                current_arcbuffer = [];
+            }
+            current_arcbuffer.push(arcbuffer)
+            localStorage.setItem('arcbuffer', JSON.stringify(current_arcbuffer));
             this.setSessionDataToLS();
         }
     }
@@ -90,27 +100,39 @@ export default class RecorderHandler {
         console.log('[ARC] Connected to Socket');
         this.initiated = true;
         console.log("Socket connection status", this.socket.connected);
-
-        /**
-         *  Sending Pre-Bufferef
-         */
-        let arcbuffer = localStorage.getItem('arcbuffer') as any;
-        try {
-            arcbuffer = JSON.parse(arcbuffer as any)
-        } catch (e) {}
-        if(arcbuffer && arcbuffer.sid) {
-            console.log('[ARC] Sending Pre-Buffered Data');
-            this.socket.emit('beacon', arcbuffer);
-        }
         
         /**
          *  Sending Session Meta
          */
 
         if(!(window as any).ARCNavigation) {
+
+            /**
+             *  Emiting Session Meta 
+             */
+
             let sessionMetaData = this.getSessionMeta();
             this.socket.emit('beacon', JSON.stringify(sessionMetaData));
-            console.log('[ARC] Sending');
+            console.log('[ARC] Sending Session Meta');
+
+        } else {
+
+            /**
+             *  Sending Pre-Bufferer
+             */
+
+            let arcbuffer = localStorage.getItem('arcbuffer') as any;
+            try {
+                arcbuffer = JSON.parse(arcbuffer as any);
+            } catch (e) {
+            }
+            if(arcbuffer && arcbuffer.length) {
+                console.log('[ARC] Sending Pre-Buffered Data', arcbuffer.length);
+                for(let idx in arcbuffer) {
+                    this.socket.emit('beacon', JSON.stringify(arcbuffer[idx]));
+                }
+                localStorage.setItem('arcbuffer', '[]');
+            }
         }
 
         /**
@@ -155,7 +177,7 @@ export default class RecorderHandler {
         if(sendToServer) {
             this.socket.emit('beacon', msgstr);
         }
-        return msgstr;
+        return packet;
     }
 
     getPID =()=> window.location.pathname
