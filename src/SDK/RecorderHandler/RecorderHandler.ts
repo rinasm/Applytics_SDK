@@ -131,7 +131,7 @@ export default class RecorderHandler {
                 for(let idx in arcbuffer) {
                     this.socket.emit('beacon', JSON.stringify(arcbuffer[idx]));
                 }
-                localStorage.setItem('arcsid', '[]');
+                localStorage.setItem('arcbuffer', '[]');
             }
         }
 
