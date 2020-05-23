@@ -30,17 +30,18 @@ export default class RecorderHandler {
         console.log('[ARC] Waiting for document ready state');
 
         (window as any).docReady(()=> {
-            loadJS('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js', ()=>{
-                console.log('[ARC] Socket loaded');
-                this.recorderData = [];
-                this.recorder = new Recorder({
-                    sid: this.sid,
-                    cid: this.cid,
-                    aid: this.aid
-                });
-                this.recorder.getLiveUpdate(this.onRecorderUpdater);
-                this.recorder.start(document.body);
+            console.log('[ARC] Doc Ready', performance.now());
+            this.recorderData = [];
+            this.recorder = new Recorder({
+                sid: this.sid,
+                cid: this.cid,
+                aid: this.aid
+            });
+            this.recorder.getLiveUpdate(this.onRecorderUpdater);
+            this.recorder.start(document.body);
 
+            loadJS('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js', ()=>{
+                console.log('[ARC] Socket loaded', performance.now());
                 let io = (window as any).io;
                 this.socket = io(host, {
                     query:{

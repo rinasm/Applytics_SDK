@@ -59,7 +59,7 @@ export default class Recorder {
             this.mutaionHandler.handleMutations(mutations);
         });
         observer.observe(node, recorderConfig); 
-        console.log('[ARC] Started Recording');
+        console.log('[ARC] Started Recording', performance.now());
     }
 
     /**
