@@ -1,23 +1,31 @@
-const path = require('path');
+const path = require("path");
+const CompressionPlugin = require('compression-webpack-plugin');
+const MinifyPlugin = require("babel-minify-webpack-plugin");
 
 module.exports = {
-    entry: './src/SDK/index.ts',
-    devtool: 'inline-source-map',
-    mode: 'development',
-    module: {
-        rules: [
-            {
-                test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/,
-            },
-        ],
-    },
-    resolve: {
-        extensions: [ '.tsx', '.ts', '.js' ],
-    },
-    output: {
-        filename: 'applytics.js',
-        path: path.resolve(__dirname, 'src/dist'),
-    },
+  plugins: [
+    new MinifyPlugin(),
+    new CompressionPlugin({
+      test: /\.js(\?.*)?$/i,
+    }),
+  ],
+  entry: "./src/SDK/index.ts",
+  devtool: "null",
+  mode: "production",
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
+      },
+    ],
+  },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
+  output: {
+    filename: "applytics.js",
+    path: path.resolve(__dirname, "src/dist"),
+  },
 };
