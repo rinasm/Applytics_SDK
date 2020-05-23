@@ -58,10 +58,8 @@ export default class RecorderHandler {
 
 
         window.onbeforeunload =()=> {
-            if(this.rcDataBuffer && this.rcDataBuffer.length) {
-                this.emitToSocket('event', this.rcDataBuffer);
-                this.rcDataBuffer = [];
-            }
+            let arcbuffer = this.emitToSocket('event', this.rcDataBuffer, false);
+            localStorage.setItem('arcbuffer', arcbuffer);
             this.setSessionDataToLS();
         }
     }
@@ -92,6 +90,18 @@ export default class RecorderHandler {
         console.log('[ARC] Connected to Socket');
         this.initiated = true;
         console.log("Socket connection status", this.socket.connected);
+
+        /**
+         *  Sending Pre-Bufferef
+         */
+        let arcbuffer = localStorage.getItem('arcbuffer') as any;
+        try {
+            arcbuffer = JSON.parse(arcbuffer as any)
+        } catch (e) {}
+        if(arcbuffer && arcbuffer.sid) {
+            console.log('[ARC] Sending Pre-Buffered Data');
+            this.socket.emit('beacon', arcbuffer);
+        }
         
         /**
          *  Sending Session Meta
@@ -123,7 +133,7 @@ export default class RecorderHandler {
         }, 1000);
     }
 
-    emitToSocket =(type:String, data:any)=> {
+    emitToSocket =(type:String, data:any, sendToServer=true)=> {
         let packet = {
             sid: this.sid,
             cid: this.cid,
@@ -141,7 +151,11 @@ export default class RecorderHandler {
             (window as any).log('[ARC] Packet size', size, 'Bytes, ', Math.ceil(size/1024), 'kb');
             (window as any).log(packet);
         }
-        this.socket.emit('beacon', JSON.stringify(packet));
+        let msgstr = JSON.stringify(packet);
+        if(sendToServer) {
+            this.socket.emit('beacon', msgstr);
+        }
+        return msgstr;
     }
 
     getPID =()=> window.location.pathname
