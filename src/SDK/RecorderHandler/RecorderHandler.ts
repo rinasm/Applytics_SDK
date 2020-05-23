@@ -95,6 +95,7 @@ export default class RecorderHandler {
         if(!(window as any).ARCNavigation) {
             let sessionMetaData = this.getSessionMeta();
             this.socket.emit('beacon', JSON.stringify(sessionMetaData));
+            console.log('[ARC] Sending');
         }
 
         /**
