@@ -27,7 +27,7 @@ export default class RecorderHandler {
         this.aid = args.appId;
         this.cid = args.clientId;
 
-        console.log('[ARC] Waiting for document ready state');
+        console.log('[ARC] Waiting for document ready state, SID', this.sid);
 
         (window as any).docReady(()=> {
             console.log('[ARC] Doc Ready', performance.now());
