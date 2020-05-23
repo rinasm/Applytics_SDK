@@ -19,7 +19,7 @@ export const getSID =()=> {
     try {
         arcsid = JSON.parse(arcsid) as any
     } catch (e) {}
-    if(arcsid && arcsid.createdAt && Date.now() - arcsid.createdAt < 15000 &&
+    if(arcsid && arcsid.createdAt && Date.now() - arcsid.createdAt < 8000 &&
         document.referrer !== window.location.href &&
         arcsid.location.href !== window.location.href) {
         (window as any).ARCNavigation = true;
@@ -28,7 +28,7 @@ export const getSID =()=> {
         console.log('[ARC] Total Previous Duration', (window as any).sidinit);
         console.log('[ARC] Current SID', arcsid.sid);
         return arcsid.sid
-    } else  if(document.referrer === window.location.href) {
+    } else if(document.referrer === window.location.href) {
         console.log('[ARC] Reload Detected')
     }
     if(sid == null) {
