@@ -73,7 +73,7 @@ export default class RecorderHandler {
     setSessionDataToLS =()=> {
         if(!this.sid)
             return;
-            
+
         let meta = this.getARCSIDMeta(true) as any;
         localStorage.setItem('arcsid', JSON.stringify(meta));
     }
@@ -92,8 +92,10 @@ export default class RecorderHandler {
          *  Sending Session Meta
          */
 
-        let sessionMetaData = this.getSessionMeta();
-        this.socket.emit('beacon', JSON.stringify(sessionMetaData));
+        if(!(window as any).ARCNavigation) {
+            let sessionMetaData = this.getSessionMeta();
+            this.socket.emit('beacon', JSON.stringify(sessionMetaData));
+        }
 
         /**
          *  Sending Buffered Data

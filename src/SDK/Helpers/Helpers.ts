@@ -20,14 +20,15 @@ export const getSID =()=> {
     } catch (e) {}
     if(arcsid && arcsid.createdAt && Date.now() - arcsid.createdAt < 15000 && document.referrer !== window.location.href) {
         sid = arcsid.sid
-        console.log('[ARC] : Navigation Detected');
+        (window as any).ARCNavigation = true;
+        console.log('[ARC] Navigation Detected');
     } else  if(document.referrer === window.location.href) {
-        console.log('[ARC] : Reload Detected')
+        console.log('[ARC] Reload Detected')
     }
     console.log(arcsid);
     if(sid == null) {
         sid = generateSID();
-        console.log('[ARC] : Generating SID')
+        console.log('[ARC] Generating SID')
     }
     return sid;
 }
