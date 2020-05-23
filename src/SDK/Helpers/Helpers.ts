@@ -19,13 +19,12 @@ export const getSID =()=> {
         arcsid = JSON.parse(arcsid) as any
     } catch (e) {}
     if(arcsid && arcsid.createdAt && Date.now() - arcsid.createdAt < 15000 && document.referrer !== window.location.href) {
-        sid = arcsid.sid
         (window as any).ARCNavigation = true;
         console.log('[ARC] Navigation Detected');
+        return arcsid.sid
     } else  if(document.referrer === window.location.href) {
         console.log('[ARC] Reload Detected')
     }
-    console.log(arcsid);
     if(sid == null) {
         sid = generateSID();
         console.log('[ARC] Generating SID')
