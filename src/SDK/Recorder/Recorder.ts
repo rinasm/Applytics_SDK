@@ -46,7 +46,7 @@ export default class Recorder {
         this.windowEventHandler = new WindowEventHandler({ getRecorder: ()=> this });
         this.webRequestHandler = new WebRequestHandler({ getRecorder: ()=> this });
         this.metaDataHandler = new MetaDataHandler({ getRecorder: ()=> this });
-        console.log('[ARC] Recorder Initiated. V 0.2.19');
+        console.log('[ARC] Recorder Initiated. V 0.2.20');
     }    
 
     start =(node: any)=> {
@@ -209,11 +209,11 @@ export default class Recorder {
      *  The Event Generator
      */
 
-     
+    getTime =()=> ((window as any).sidinit || 0) + parseFloat(performance.now().toFixed(4));
 
     generateEvent =(action:any)=> {
         let event:any = {
-            time: parseFloat(performance.now().toFixed(4))
+            time: this.getTime()
         } 
         event = {
             ...event,
