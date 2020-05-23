@@ -59,7 +59,14 @@ export default class RecorderHandler {
 
         window.onbeforeunload =()=> {
             let arcbuffer = this.emitToSocket('event', this.rcDataBuffer, false);
-            localStorage.setItem('arcbuffer', arcbuffer);
+            let current_arcbuffer = (localStorage.getItem('arcbuffer') || '[]') as any;
+            try {
+                current_arcbuffer = JSON.parse(current_arcbuffer)
+            } catch (e) {
+                current_arcbuffer = [];
+            }
+            current_arcbuffer.push(arcbuffer)
+            localStorage.setItem('arcbuffer', JSON.stringify(current_arcbuffer));
             this.setSessionDataToLS();
         }
     }
@@ -112,20 +119,17 @@ export default class RecorderHandler {
              */
 
             let arcbuffer = localStorage.getItem('arcbuffer') as any;
-            let arcbufferAvailable = false;
             try {
-                JSON.parse(arcbuffer as any);
-                arcbufferAvailable = true;
+                arcbuffer = JSON.parse(arcbuffer as any);
             } catch (e) {
-                arcbufferAvailable = false;
             }
-            if(arcbuffer && arcbuffer.length && arcbufferAvailable) {
-                console.log('[ARC] Sending Pre-Buffered Data');
-                this.socket.emit('beacon', arcbuffer);
-                localStorage.removeItem('arcsid');
-
+            if(arcbuffer && arcbuffer.length) {
+                console.log('[ARC] Sending Pre-Buffered Data', arcbuffer.length);
+                for(let idx in arcbuffer) {
+                    this.socket.emit('beacon', JSON.stringify(arcbuffer[idx]));
+                }
+                localStorage.setItem('arcsid', '[]');
             }
-
         }
 
         /**
@@ -170,7 +174,7 @@ export default class RecorderHandler {
         if(sendToServer) {
             this.socket.emit('beacon', msgstr);
         }
-        return msgstr;
+        return packet;
     }
 
     getPID =()=> window.location.pathname
