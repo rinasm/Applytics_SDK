@@ -57,6 +57,10 @@ export default class RecorderHandler {
 
 
         window.onbeforeunload =()=> {
+            if(this.rcDataBuffer && this.rcDataBuffer.length) {
+                this.emitToSocket('event', this.rcDataBuffer);
+                this.rcDataBuffer = [];
+            }
             this.setSessionDataToLS();
         }
     }

@@ -19,7 +19,9 @@ export const getSID =()=> {
     try {
         arcsid = JSON.parse(arcsid) as any
     } catch (e) {}
-    if(arcsid && arcsid.createdAt && Date.now() - arcsid.createdAt < 15000 && document.referrer !== window.location.href) {
+    if(arcsid && arcsid.createdAt && Date.now() - arcsid.createdAt < 15000 &&
+        document.referrer !== window.location.href &&
+        arcsid.location.href !== window.location.href) {
         (window as any).ARCNavigation = true;
         (window as any).sidinit = Date.now() - sidinit;
         console.log('[ARC] Navigation Detected');
