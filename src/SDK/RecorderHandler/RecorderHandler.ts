@@ -65,6 +65,9 @@ export default class RecorderHandler {
             } catch (e) {
                 current_arcbuffer = [];
             }
+            if(!current_arcbuffer || !current_arcbuffer.length) {
+                current_arcbuffer = [];
+            }
             current_arcbuffer.push(arcbuffer)
             localStorage.setItem('arcbuffer', JSON.stringify(current_arcbuffer));
             this.setSessionDataToLS();
