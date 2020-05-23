@@ -1,11 +1,5 @@
 const path = require("path");
-const CompressionPlugin = require('compression-webpack-plugin');
 module.exports = {
-  plugins: [
-    new CompressionPlugin({
-      test: /\.js(\?.*)?$/i,
-    }),
-  ],
   entry: "./src/SDK/index.ts",
   devtool: "null",
   mode: "production",
