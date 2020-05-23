@@ -95,12 +95,18 @@ export default class RecorderHandler {
          *  Sending Pre-Bufferef
          */
         let arcbuffer = localStorage.getItem('arcbuffer') as any;
+        let arcbufferAvailable = false;
         try {
-            arcbuffer = JSON.parse(arcbuffer as any)
-        } catch (e) {}
-        if(arcbuffer && arcbuffer.sid) {
+            JSON.parse(arcbuffer as any);
+            arcbufferAvailable = true;
+        } catch (e) {
+            arcbufferAvailable = false;
+        }
+        if(arcbuffer && arcbuffer.length && arcbufferAvailable) {
             console.log('[ARC] Sending Pre-Buffered Data');
             this.socket.emit('beacon', arcbuffer);
+            localStorage.removeItem('arcsid');
+
         }
         
         /**
