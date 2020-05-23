@@ -19,5 +19,6 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 EXPOSE 4000:4000
 COPY --from=goBuilder /go/src/sdk/sdk ./
-COPY --from=goBuilder /go/src/sdk/ ./static/
+COPY --from=goBuilder /go/src/sdk/applytics.js  ./static/
+COPY --from=goBuilder /go/src/sdk/applytics.js.gz  ./static/
 CMD ["./sdk"]  
