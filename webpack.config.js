@@ -1,10 +1,7 @@
 const path = require("path");
 const CompressionPlugin = require('compression-webpack-plugin');
-const MinifyPlugin = require("babel-minify-webpack-plugin");
-
 module.exports = {
   plugins: [
-    new MinifyPlugin(),
     new CompressionPlugin({
       test: /\.js(\?.*)?$/i,
     }),
