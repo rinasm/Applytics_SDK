@@ -53,4 +53,4 @@ jobs:
         username: git_bot
         port: 22
         key: ${{ secrets.SERVER_PRIVATE_KEY }}
-        script: cd sdk && sudo docker pull gcr.io/applytics/sdk-image:latest && sudo docker-compose -f docker-compose-production.yaml up -d
+        script: cd sdk && sudo docker pull gcr.io/applytics/sdk-image:latest && sudo docker-compose -f docker-compose-production.yaml up -d && sudo docker image prune -f
