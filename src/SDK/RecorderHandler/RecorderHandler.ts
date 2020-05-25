@@ -123,7 +123,7 @@ export default class RecorderHandler {
              *  Sending Pre-Bufferer
              */
             let store = getStore();
-            console.log('Pre-Buffered Data', store, JSON.stringify(store).length / 1024)
+            console.log('Pre-Buffered Data', store, store.length, JSON.stringify(store).length / 1024)
             this.sendDataToServer();
         }
 

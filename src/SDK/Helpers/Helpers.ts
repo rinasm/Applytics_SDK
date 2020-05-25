@@ -123,6 +123,7 @@ export const saveStore =()=> {
         data: []
     }
     let idx;
+    let failed = false;
     for(idx = (window as any).arcbeaconstore.data.length-1; idx >= 0; idx--) {
         newstore.data.push((window as any).arcbeaconstore.data[idx])
         let sdata = JSON.stringify(newstore); 
@@ -135,16 +136,20 @@ export const saveStore =()=> {
                 pushed: (window as any).arcbeaconstore.data.length - idx,
             }
             localStorage.setItem('arcstore_log', JSON.stringify(log));
-            break;
+            failed = true
+        }
+        if(failed) {
+            return;
         }
     }
-    if(idx > 0) {
-        let sdata = JSON.stringify(newstore); 
-        let log = {
-            size: sdata.length / 1024,
-            totalLength: (window as any).arcbeaconstore.data.length,
-            pushed: (window as any).arcbeaconstore.data.length,
-        }
-        localStorage.setItem('arcstore_log', JSON.stringify(log));
+    if(failed) {
+        return;
     }
+    let sdata = JSON.stringify(newstore); 
+    let log = {
+        size: sdata.length / 1024,
+        totalLength: (window as any).arcbeaconstore.data.length,
+        pushed: (window as any).arcbeaconstore.data.length,
+    }
+    localStorage.setItem('arcstore_log', JSON.stringify(log));
 }
