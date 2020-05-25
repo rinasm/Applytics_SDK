@@ -60,7 +60,8 @@ export const newBeacon =(topic: any, data: any)=> {
     let bobj = {
         topic,
         data,
-        bid
+        bid,
+        ca: Date.now()
     }
     updateStore(bid, bobj);
 }
@@ -75,18 +76,18 @@ export const getStore =()=> {
 
 const removeItemFromStore =(key: any)=> {
     let store = getCurrentStore();
-    delete store.data[key];
+    store.data = store.data.filter((d: any)=>d.bid !== key);
 }
 
 const updateStore =(key: any, data:any)=> {
     let store = getCurrentStore();
-    store.data[key] = data;
+    store.data.push(data);
 }
 
 const newStore =(sid: string)=> {
     return {
         sid,
-        data: {}
+        data: []
     }
 }
 
@@ -109,12 +110,41 @@ const getCurrentStoreFromLS =(sid: string)=> {
 
 export const initStore =(sid: any)=> {
     (window as any).arcbeaconstore = getCurrentStoreFromLS(sid);
+    let err_log = localStorage.getItem('arcstore_log') as any;
+    try {
+        err_log = JSON.parse(err_log);
+    } catch (e) {}
+    console.log('[ARC] Pre-Buffer Storage Log', err_log);
 }
 
 export const saveStore =()=> {
-    try {
-        localStorage.setItem('arcstore', JSON.stringify((window as any).arcbeaconstore));
-    } catch(e) {
-        localStorage.removeItem('arcstore');
+    let newstore = {
+        ...((window as any).arcbeaconstore.data as any),
+        data: []
+    }
+    let idx;
+    for(idx = (window as any).arcbeaconstore.data.length-1; idx >= 0; idx--) {
+        newstore.data.push((window as any).arcbeaconstore.data[idx])
+        let sdata = JSON.stringify(newstore); 
+        try {
+            localStorage.setItem('arcstore', sdata);
+        } catch (e) {
+            let log = {
+                size: sdata.length / 1024,
+                totalLength: (window as any).arcbeaconstore.data.length,
+                pushed: (window as any).arcbeaconstore.data.length - idx,
+            }
+            localStorage.setItem('arcstore_log', JSON.stringify(log));
+            idx = -2;
+        }
+    }
+    if(idx !== -2) {
+        let sdata = JSON.stringify(newstore); 
+        let log = {
+            size: sdata.length / 1024,
+            totalLength: (window as any).arcbeaconstore.data.length,
+            pushed: (window as any).arcbeaconstore.data.length,
+        }
+        localStorage.setItem('arcstore_log', JSON.stringify(log));
     }
 }
