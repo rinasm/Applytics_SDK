@@ -189,6 +189,7 @@ export default class RecorderHandler {
                 beaconsToSend.push(store[idx]);
             }
         }
+        console.log(store, beaconsToSend, (window as any).dataSendQList);
         for(let idx in beaconsToSend) {
             (window as any).dataSendQList[beaconsToSend[idx].bid] = Date.now();
             this.socket.emit(beaconsToSend[idx].topic, beaconsToSend[idx].bid + beaconsToSend[idx].data);
