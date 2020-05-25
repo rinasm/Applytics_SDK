@@ -70,13 +70,13 @@ export const getStore =(sid: any)=> {
 const removeItemFromStore =(sid: any, key: any)=> {
     let store = getCurrentStore(sid);
     delete store.data[key];
-    localStorage.setItem('arcstore', store);
+    localStorage.setItem('arcstore', JSON.stringify(store));
 }
 
 const updateStore =(sid: any, key: any, data:any)=> {
     let store = getCurrentStore(sid);
     store.data[key] = data;
-    localStorage.setItem('arcstore', store);
+    localStorage.setItem('arcstore', JSON.stringify(store));
 }
 
 const newStore =(sid: string)=> {
