@@ -155,6 +155,7 @@ export const saveStore =()=> {
         size: sdata.length / 1024,
         totalLength: (window as any).arcbeaconstore.data.length,
         pushed: (window as any).arcbeaconstore.data.length,
+        sid: (window as any).arcbeaconstore.sid
     }
     localStorage.setItem('arcstore_log', JSON.stringify(log));
 }
