@@ -46,7 +46,7 @@ export default class Recorder {
         this.windowEventHandler = new WindowEventHandler({ getRecorder: ()=> this });
         this.webRequestHandler = new WebRequestHandler({ getRecorder: ()=> this });
         this.metaDataHandler = new MetaDataHandler({ getRecorder: ()=> this });
-        console.log('[ARC] Recorder Initiated. V 0.2.28');
+        console.log('[ARC] Recorder Initiated. V 0.2.29');
     }    
 
     start =(node: any)=> {
@@ -217,7 +217,8 @@ export default class Recorder {
         } 
         event = {
             ...event,
-            ...action
+            ...action,
+            navigationType: performance.navigation.type
         } 
         if(!initialSnapshotSend && event.initial) {
             initialSnapshotSend = true;
