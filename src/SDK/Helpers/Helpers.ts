@@ -135,10 +135,10 @@ export const saveStore =()=> {
                 pushed: (window as any).arcbeaconstore.data.length - idx,
             }
             localStorage.setItem('arcstore_log', JSON.stringify(log));
-            idx = -2;
+            break;
         }
     }
-    if(idx !== -2) {
+    if(idx > 0) {
         let sdata = JSON.stringify(newstore); 
         let log = {
             size: sdata.length / 1024,
