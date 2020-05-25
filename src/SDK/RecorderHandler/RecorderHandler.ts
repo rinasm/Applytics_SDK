@@ -5,7 +5,8 @@ import {host, eventTypes} from '../Constants/Constants';
 
 interface RHArgs {
     clientId: String,
-    appId: String
+    appId: String,
+    arccsrc: Boolean
 }
 
 export default class RecorderHandler {
@@ -26,6 +27,14 @@ export default class RecorderHandler {
         this.sid = getSID();
         this.aid = args.appId;
         this.cid = args.clientId;
+
+        if(!(window as any).ARCNavigation && args.arccsrc) {
+            console.log('[ARC] Exiting Cached SDK');
+            return;
+        } else if(args.arccsrc) {
+            console.log('[ARC] Using Cached SDK');
+            (window as any).ARCSDKRU = true;
+        }
 
         console.log('[ARC] Waiting for document ready state, SID', this.sid);
 
