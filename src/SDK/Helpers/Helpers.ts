@@ -49,33 +49,39 @@ const urlParserKey = '[^]';
 
 export const parseURL =(url:any)=> (url||'').split('.').join(urlParserKey)
 
-export const newBeacon =(sid:any, topic: any, data: any)=> {
+/**
+ * 
+ *  STORE
+ * 
+ */
+
+export const newBeacon =(topic: any, data: any)=> {
     let bid = getBeaconID();
     let bobj = {
         topic,
         data,
         bid
     }
-    updateStore(sid, bid, bobj);
+    updateStore(bid, bobj);
 }
 
-export const beaconSendSuccess =(sid: any, bid: any)=> {
-    removeItemFromStore(sid, bid)
+export const beaconSendSuccess =(bid: any)=> {
+    removeItemFromStore(bid)
 }
 
-export const getStore =(sid: any)=> {
-    return getCurrentStore(sid).data as any;
+export const getStore =()=> {
+    return (window as any).arcbeaconstore.data;
 }
 
-const removeItemFromStore =(sid: any, key: any)=> {
-    let store = getCurrentStore(sid);
+const removeItemFromStore =(key: any)=> {
+    let store = getCurrentStore();
     delete store.data[key];
-    localStorage.setItem('arcstore', JSON.stringify(store));
+    // localStorage.setItem('arcstore', JSON.stringify(store));
 }
 
-const updateStore =(sid: any, key: any, data:any)=> {
-    let store = getCurrentStore(sid);
-    store.data[key] = data;
+const updateStore =(key: any, data:any)=> {
+    let store = getCurrentStore();
+    (window as any).arcbeaconstore.data[key] = data;
     localStorage.setItem('arcstore', JSON.stringify(store));
 }
 
@@ -86,7 +92,11 @@ const newStore =(sid: string)=> {
     }
 }
 
-const getCurrentStore =(sid: string)=> {
+const getCurrentStore =()=> {
+    return (window as any).arcbeaconstore.data;
+}
+
+const getCurrentStoreFromLS =(sid: string)=> {
     let store = localStorage.getItem('arcstore') as any;
     try {
         store = JSON.parse(store)
@@ -97,4 +107,16 @@ const getCurrentStore =(sid: string)=> {
         store = newStore(sid);
     } 
     return store;
+}
+
+export const initStore =(sid: any)=> {
+    (window as any).arcbeaconstore = getCurrentStoreFromLS(sid);
+}
+
+export const saveStore =()=> {
+    try {
+        localStorage.setItem('arcstore', JSON.stringify((window as any).arcbeaconstore));
+    } catch(e) {
+        localStorage.removeItem('arcstore');
+    }
 }

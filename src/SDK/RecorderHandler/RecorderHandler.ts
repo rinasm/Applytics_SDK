@@ -1,5 +1,5 @@
 import '../Helpers/DocReady';
-import {getSID, loadJS, parseURL, getStore, newBeacon, beaconSendSuccess} from '../Helpers/Helpers';
+import {getSID, loadJS, parseURL, getStore, newBeacon, beaconSendSuccess, saveStore, initStore} from '../Helpers/Helpers';
 import Recorder from '../Recorder/Recorder';
 import {host, eventTypes} from '../Constants/Constants'; 
 
@@ -28,6 +28,7 @@ export default class RecorderHandler {
         this.aid = args.appId;
         this.cid = args.clientId;
 
+        initStore(this.sid);
         (window as any).dataSendQList = {};
 
         if(!(window as any).ARCNavigation && args.arccsrc) {
@@ -71,6 +72,7 @@ export default class RecorderHandler {
 
         window.onbeforeunload =()=> {
             this.emitToSocket('event', this.rcDataBuffer); 
+            saveStore();
             this.setSessionDataToLS();
         }
     }
@@ -120,7 +122,7 @@ export default class RecorderHandler {
             /**
              *  Sending Pre-Bufferer
              */
-            let store = getStore(this.sid);
+            let store = getStore();
             console.log('Pre-Buffered Data', store, JSON.stringify(store).length / 1024)
             this.sendDataToServer();
         }
@@ -147,20 +149,20 @@ export default class RecorderHandler {
 
     onACK =(pid: any)=> {
         if(pid) {
-            beaconSendSuccess(this.sid, pid);
+            beaconSendSuccess(pid);
             delete (window as any).dataSendQList[pid];
         }
     }
 
     socketEmit =(topic:string, data: any, sendToServer=true)=> {
-        newBeacon(this.sid, topic, data);
+        newBeacon(topic, data);
         if(sendToServer) {
             this.sendDataToServer();
         }
     }
 
     sendDataToServer =()=> {
-        let store = getStore(this.sid);
+        let store = getStore();
         let beaconsToSend = [];
         for(let idx in store) {
             if(!(window as any).dataSendQList[store[idx].bid]) {
