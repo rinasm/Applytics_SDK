@@ -14,7 +14,7 @@
     "start": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build": "GENERATE_SOURCEMAP=false npx webpack --config webpack.config.js"
+    "build": "npx webpack --config webpack.config.js"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -32,8 +32,6 @@
     ]
   },
   "devDependencies": {
-    "babel-minify-webpack-plugin": "^0.3.1",
-    "compression-webpack-plugin": "^4.0.0",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.5",
     "webpack-cli": "^3.3.10"
