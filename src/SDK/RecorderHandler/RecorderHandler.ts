@@ -106,9 +106,8 @@ export default class RecorderHandler {
     }
 
     onConnect =()=> {
-        console.log('[ARC] Connected to Socket');
+        console.log('[ARC] Connected to Socket, STATUS: ', this.socket.connected);
         this.initiated = true;
-        console.log("Socket connection status", this.socket.connected);
         
         /**
          *  Sending Session Meta

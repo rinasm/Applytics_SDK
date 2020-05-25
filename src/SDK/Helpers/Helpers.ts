@@ -22,7 +22,7 @@ export const getSID =()=> {
     if((arcsid && arcsid.sid && (document.referrer || '').indexOf(window.location.host) !== -1) || performance.navigation.type === 1) {
         (window as any).ARCNavigation = true;
         (window as any).sidinit = Date.now() - sidinit;
-        console.log('[ARC] Navigation Detected');
+        console.log('[ARC] ' + (performance.navigation.type === 1 ? 'Refresh' : 'Navigation') +' Detected');
         console.log('[ARC] Total Previous Duration', (window as any).sidinit);
         console.log('[ARC] Current SID', arcsid.sid);
         return arcsid.sid

@@ -79,7 +79,7 @@ export default class MetaDataHandler {
             if(browser.indexOf('BingPreview') !== -1) {
                 return 'Bing Preview SG'
             }
-            return 'Unknown Browser';
+            return browser.split(' ')[0] || 'Other';
         }
         return browser || ''
     }
