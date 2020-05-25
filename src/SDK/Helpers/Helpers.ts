@@ -70,7 +70,7 @@ export const beaconSendSuccess =(bid: any)=> {
 }
 
 export const getStore =()=> {
-    return (window as any).arcbeaconstore.data;
+    return getCurrentStore().data;
 }
 
 const removeItemFromStore =(key: any)=> {
@@ -93,7 +93,7 @@ const newStore =(sid: string)=> {
 }
 
 const getCurrentStore =()=> {
-    return (window as any).arcbeaconstore.data;
+    return (window as any).arcbeaconstore;
 }
 
 const getCurrentStoreFromLS =(sid: string)=> {
