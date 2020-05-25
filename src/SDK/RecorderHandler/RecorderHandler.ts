@@ -167,10 +167,9 @@ export default class RecorderHandler {
     }
 
     onACK =(pid: any)=> {
-        console.log('[ARC] on Ack', pid)
         if(pid) {
             beaconSendSuccess(this.sid, pid);
-            delete (window as any).sendDataToServer[pid];
+            delete (window as any).dataSendQList[pid];
         }
     }
 
@@ -189,7 +188,6 @@ export default class RecorderHandler {
                 beaconsToSend.push(store[idx]);
             }
         }
-        console.log(store, beaconsToSend, (window as any).dataSendQList);
         for(let idx in beaconsToSend) {
             (window as any).dataSendQList[beaconsToSend[idx].bid] = Date.now();
             this.socket.emit(beaconsToSend[idx].topic, beaconsToSend[idx].bid + beaconsToSend[idx].data);
