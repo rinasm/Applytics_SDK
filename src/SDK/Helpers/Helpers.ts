@@ -76,13 +76,11 @@ export const getStore =()=> {
 const removeItemFromStore =(key: any)=> {
     let store = getCurrentStore();
     delete store.data[key];
-    // localStorage.setItem('arcstore', JSON.stringify(store));
 }
 
 const updateStore =(key: any, data:any)=> {
     let store = getCurrentStore();
-    (window as any).arcbeaconstore.data[key] = data;
-    localStorage.setItem('arcstore', JSON.stringify(store));
+    store.data[key] = data;
 }
 
 const newStore =(sid: string)=> {
