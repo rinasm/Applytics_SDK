@@ -130,6 +130,7 @@ export default class DomParser {
     takeSnapshot =(node:any, initial:any)=> {
         this.getRecorder().populateId(node);
         let clone = this.getHTML(node);
+        console.log('[ARC] Taking Snapshot')
         this.getRecorder().generateEvent({
             type: eventTypes.snapshot, 
             dom: clone, 
