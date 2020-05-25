@@ -114,7 +114,11 @@ export const initStore =(sid: any)=> {
     try {
         err_log = JSON.parse(err_log);
     } catch (e) {}
-    console.log('[ARC] Pre-Buffer Storage Log', err_log);
+    if(err_log && err_log.sid === sid) {
+        console.log('[ARC] Pre-Buffer Storage Log', err_log);
+    } else {
+        console.log('[ARC] No Pre-Buffer Storage Log found!');
+    }
 }
 
 export const saveStore =()=> {
@@ -134,6 +138,7 @@ export const saveStore =()=> {
                 size: sdata.length / 1024,
                 totalLength: (window as any).arcbeaconstore.data.length,
                 pushed: (window as any).arcbeaconstore.data.length - idx,
+                sid: (window as any).arcbeaconstore.sid
             }
             localStorage.setItem('arcstore_log', JSON.stringify(log));
             failed = true
