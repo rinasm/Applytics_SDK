@@ -46,10 +46,11 @@ export default class Recorder {
         this.windowEventHandler = new WindowEventHandler({ getRecorder: ()=> this });
         this.webRequestHandler = new WebRequestHandler({ getRecorder: ()=> this });
         this.metaDataHandler = new MetaDataHandler({ getRecorder: ()=> this });
-        console.log('[ARC] Recorder Initiated. V 0.3.3');
+        console.log('[ARC] Recorder Initiated. V 0.3.5');
     }    
 
     start =(node: any)=> {
+        console.log('[ARC] Started Recording', performance.now());
         this.domParser.recordStyle();
         this.bindScroll(window);
         this.bindMouseEvent(document);
@@ -59,7 +60,6 @@ export default class Recorder {
             this.mutaionHandler.handleMutations(mutations);
         });
         observer.observe(node, recorderConfig); 
-        console.log('[ARC] Started Recording', performance.now());
     }
 
     /**

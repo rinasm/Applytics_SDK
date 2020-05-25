@@ -1,5 +1,5 @@
 import '../Helpers/DocReady';
-import {getSID, loadJS, parseURL} from '../Helpers/Helpers';
+import {getSID, loadJS, parseURL, getStore, newBeacon, beaconSendSuccess} from '../Helpers/Helpers';
 import Recorder from '../Recorder/Recorder';
 import {host, eventTypes} from '../Constants/Constants'; 
 
@@ -27,6 +27,8 @@ export default class RecorderHandler {
         this.sid = getSID();
         this.aid = args.appId;
         this.cid = args.clientId;
+
+        (window as any).dataSendQList = {};
 
         if(!(window as any).ARCNavigation && args.arccsrc) {
             console.log('[ARC] Exiting Cached SDK');
@@ -62,6 +64,7 @@ export default class RecorderHandler {
                 this.socket.once('connect', this.onConnect);
                 this.socket.once('reconnect', this.onConnect);
                 this.socket.once('disconnect', this.onDisconnect);
+                this.socket.on('ack', this.onACK)
             })
         }, window)
 
@@ -120,7 +123,7 @@ export default class RecorderHandler {
              */
 
             let sessionMetaData = this.getSessionMeta();
-            this.socket.emit('beacon', JSON.stringify(sessionMetaData));
+            this.socketEmit('beacon', JSON.stringify(sessionMetaData));
             console.log('[ARC] Sending Session Meta');
 
         } else {
@@ -137,7 +140,7 @@ export default class RecorderHandler {
             if(arcbuffer && arcbuffer.length) {
                 console.log('[ARC] Sending Pre-Buffered Data', arcbuffer.length);
                 for(let idx in arcbuffer) {
-                    this.socket.emit('beacon', JSON.stringify(arcbuffer[idx]));
+                    this.socketEmit('beacon', JSON.stringify(arcbuffer[idx]));
                 }
                 localStorage.setItem('arcbuffer', '[]');
             }
@@ -147,7 +150,7 @@ export default class RecorderHandler {
          *  Sending Buffered Data
          */
         for(let idx in this.recorderData) {
-            this.sendToServer(this.recorderData[idx]);
+            this.addToBuffer(this.recorderData[idx]);
         }
         this.recorderData = [];
 
@@ -162,6 +165,36 @@ export default class RecorderHandler {
             this.setSessionDataToLS();
         }, 1000);
     }
+
+    onACK =(pid: any)=> {
+        console.log('[ARC] on Ack', pid)
+        if(pid) {
+            beaconSendSuccess(this.sid, pid);
+            delete (window as any).sendDataToServer[pid];
+        }
+    }
+
+    socketEmit =(topic:string, data: any, sendToServer=true)=> {
+        newBeacon(this.sid, topic, data);
+        if(sendToServer) {
+            this.sendDataToServer();
+        }
+    }
+
+    sendDataToServer =()=> {
+        let store = getStore(this.sid);
+        let beaconsToSend = [];
+        for(let idx in store) {
+            if(!(window as any).dataSendQList[store[idx].bid]) {
+                beaconsToSend.push(store[idx]);
+            }
+        }
+        for(let idx in beaconsToSend) {
+            (window as any).dataSendQList[beaconsToSend[idx].bid] = Date.now();
+            this.socket.emit(beaconsToSend[idx].topic, beaconsToSend[idx].bid + beaconsToSend[idx].data);
+        }
+    }
+    
 
     emitToSocket =(type:String, data:any, sendToServer=true)=> {
         let packet = {
@@ -183,14 +216,15 @@ export default class RecorderHandler {
         }
         let msgstr = JSON.stringify(packet);
         if(sendToServer) {
-            this.socket.emit('beacon', msgstr);
+            this.socketEmit('beacon', msgstr);
         }
         return packet;
     }
 
     getPID =()=> window.location.pathname
+ 
 
-    sendToServer =(event: any)=> {
+    addToBuffer =(event: any)=> {
         if(!this.initiated)
             return;
 
@@ -203,7 +237,7 @@ export default class RecorderHandler {
 
     onRecorderUpdater =(event:any)=> {
         this.recorderData.push(event);
-        this.sendToServer(event);
+        this.addToBuffer(event);
     }
 
     getSessionMeta =()=> {

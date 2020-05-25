@@ -8,6 +8,8 @@ const generateRandomString =(length: Number)=> {
     return result;
 }
 
+export const getBeaconID =()=> generateRandomString(5);
+
 export const generateSID =()=> {
     return generateRandomString(4) + '-' + generateRandomString(4) + '-' + generateRandomString(2);
 }
@@ -45,5 +47,54 @@ export function loadJS(file:any, callback:any) {
 
 const urlParserKey = '[^]'; 
 
-
 export const parseURL =(url:any)=> (url||'').split('.').join(urlParserKey)
+
+export const newBeacon =(sid:any, topic: any, data: any)=> {
+    let bid = getBeaconID();
+    let bobj = {
+        topic,
+        data,
+        bid
+    }
+    updateStore(sid, bid, bobj);
+}
+
+export const beaconSendSuccess =(sid: any, bid: any)=> {
+    removeItemFromStore(sid, bid)
+}
+
+export const getStore =(sid: any)=> {
+    return getCurrentStore(sid).data as any;
+}
+
+const removeItemFromStore =(sid: any, key: any)=> {
+    let store = getCurrentStore(sid);
+    delete store.data[key];
+    localStorage.setItem('arcstore', store);
+}
+
+const updateStore =(sid: any, key: any, data:any)=> {
+    let store = getCurrentStore(sid);
+    store.data[key] = data;
+    localStorage.setItem('arcstore', store);
+}
+
+const newStore =(sid: string)=> {
+    return {
+        sid,
+        data: {}
+    }
+}
+
+const getCurrentStore =(sid: string)=> {
+    let store = localStorage.getItem('arcstore') as any;
+    try {
+        store = JSON.parse(store)
+    } catch (e) {
+        store = {}
+    }
+    if(!store || !store.sid || store.sid !== sid) {
+        store = newStore(sid);
+    } 
+    return store;
+}
