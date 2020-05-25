@@ -63,7 +63,7 @@ export const newBeacon =(topic: any, data: any)=> {
         bid,
         ca: Date.now()
     }
-    updateStore(bid, bobj);
+    updateStore(bobj);
 }
 
 export const beaconSendSuccess =(bid: any)=> {
@@ -79,7 +79,7 @@ const removeItemFromStore =(key: any)=> {
     store.data = store.data.filter((d: any)=>d.bid !== key);
 }
 
-const updateStore =(key: any, data:any)=> {
+const updateStore =(data:any)=> {
     let store = getCurrentStore();
     store.data.push(data);
 }
@@ -119,7 +119,7 @@ export const initStore =(sid: any)=> {
 
 export const saveStore =()=> {
     let newstore = {
-        ...((window as any).arcbeaconstore.data as any),
+        ...((window as any).arcbeaconstore as any),
         data: []
     }
     let idx;
