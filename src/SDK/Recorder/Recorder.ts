@@ -15,7 +15,8 @@ let data: Array<any> = [];
 let dataBuffer: Array<any> = []
 let eventListener:any = null;
 let initialSnapshotSend: Boolean = false;
-(window as any).rcData = []
+(window as any).rcData = [];
+(window as any).rcidMap = {}
 
 export default class Recorder {
 
@@ -204,6 +205,14 @@ export default class Recorder {
     populateId =(node:any)=> {
         node.rcid = currentNodeId;
         currentNodeId++;
+        if(!(window as any).rcidMap[node.rcid]) {
+            (window as any).rcidMap[node.rcid] = 0;
+        }
+        (window as any).rcidMap[node.rcid]++;
+        if((window as any).rcidMap[node.rcid] > 1) {
+            console.log(node, node.rcid);
+            console.dir(node);
+        }
         if(node.childNodes && node.childNodes) {
             node.childNodes.forEach((child:any)=> {
                 this.populateId(child);
