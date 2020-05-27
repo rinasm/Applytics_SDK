@@ -10,7 +10,7 @@ export default class DomParser {
     getRecorder: Function;
     cssRules: any = {}; 
     inputNodeNames: Array<String> = ['TEXTAREA', 'INPUT']; 
-    forcedDimensionNodeNames: Array<String> = ['IMG', 'SVG', 'IFRAME']
+    forcedDimensionNodeNames: Array<String> = ['IMG', 'SVG']
     readImageSrc: Boolean = false;
 
     // search for class
@@ -76,8 +76,8 @@ export default class DomParser {
         } else {
             el.tagName = ['BODY'].indexOf(node.tagName) !== -1 ? 'DIV' : node.tagName;
             el.attributes = {};
-            // el.type = 'element'; Commented to reduce data;
-            if(this.forcedDimensionNodeNames.indexOf(node.tagName) !== -1) {
+            el.type = 'element';
+            if(node.tagName === 'IFRAME') {
                 el.style = {
                     width: node.clientWidth,
                     height: node.clientHeight,
@@ -115,7 +115,13 @@ export default class DomParser {
             if(this.inputNodeNames.indexOf(node.nodeName) !== -1) {
                 this.getRecorder().bindOnKeyup(node);
             }
- 
+
+            if(style && this.forcedDimensionNodeNames.indexOf(node.tagName) !== -1) {
+                el.style = {
+                    height: style.height,
+                    width: style.width
+                }
+            }
         }
         el.rcid = node.rcid;
         el.childNodes = []
