@@ -122,6 +122,16 @@ export default class DomParser {
                     width: style.width
                 }
             }
+
+            if(node.tagName === 'IMG') {
+                node.onload =()=> {
+                    let s = window.getComputedStyle(node);
+                    console.log(node, 'loaded mother fuckka', {
+                        height: s.height,
+                        width: s.width
+                    });
+                }
+            }
         }
         el.rcid = node.rcid;
         el.childNodes = []
