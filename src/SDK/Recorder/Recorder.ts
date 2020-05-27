@@ -46,7 +46,7 @@ export default class Recorder {
         this.windowEventHandler = new WindowEventHandler({ getRecorder: ()=> this });
         this.webRequestHandler = new WebRequestHandler({ getRecorder: ()=> this });
         this.metaDataHandler = new MetaDataHandler({ getRecorder: ()=> this });
-        console.log('[ARC] Recorder Initiated. V 0.3.23');
+        console.log('[ARC] Recorder Initiated. V 0.3.24');
     }    
 
     start =(node: any)=> {
@@ -98,10 +98,20 @@ export default class Recorder {
         }
     }
 
+    isAttrPresent =(target: any)=> {
+        let attrList = ['href'];
+        for(let idx in target.attributes) {
+            for(let jdx in attrList) {
+                if(target.attributes[idx].localName === attrList[jdx]) {
+                    return true
+                }
+            }
+        }
+        return false;
+    }
+
     recursivelyCheckTargetHasClickEvents:any =(target:any)=> {
-        console.log(target);
-        (window as any)._t = target;
-        if(target.onclick || target.onmousedown || target.onmouseup || target.onchange || target.href
+        if(target.onclick || target.onmousedown || target.onmouseup || target.onchange || this.isAttrPresent(target) ||
             ['INPUT'].indexOf(target.tagName) !== -1) {
             return true;
         } else if(target.tagName !== 'BODY' && target.parentNode){
