@@ -126,7 +126,7 @@ export default class DomParser {
             if(node.tagName === 'IMG') {
                 node.onload =()=> {
                     let s = window.getComputedStyle(node);
-                    console.log(node, 'loaded mother fuckka', {
+                    console.log(node, el, 'loaded mother fuckka', {
                         height: s.height,
                         width: s.width
                     });
