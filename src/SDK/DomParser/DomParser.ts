@@ -10,6 +10,7 @@ export default class DomParser {
     getRecorder: Function;
     cssRules: any = {}; 
     inputNodeNames: Array<String> = ['TEXTAREA', 'INPUT']; 
+    forcedDimensionNodeNames: Array<String> = ['IMG', 'SVG']
     readImageSrc: Boolean = false;
 
     // search for class
@@ -113,6 +114,13 @@ export default class DomParser {
 
             if(this.inputNodeNames.indexOf(node.nodeName) !== -1) {
                 this.getRecorder().bindOnKeyup(node);
+            }
+
+            if(style && this.forcedDimensionNodeNames.indexOf(node.nodeName) !== -1) {
+                node.forcedDim = {
+                    height: style.height,
+                    width: style.width
+                }
             }
         }
         el.rcid = node.rcid;

@@ -71,7 +71,7 @@ export default class RecorderHandler {
 
 
         window.onbeforeunload =()=> {
-            this.emitToSocket('event', this.rcDataBuffer); 
+            this.emitToSocket('event', this.rcDataBuffer, false); 
             saveStore();
             this.setSessionDataToLS();
         }
