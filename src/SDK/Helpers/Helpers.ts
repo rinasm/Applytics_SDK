@@ -21,7 +21,7 @@ export const getSID =()=> {
     try {
         arcsid = JSON.parse(arcsid) as any
     } catch (e) {}
-    if((arcsid && arcsid.sid && (document.referrer || '').indexOf(window.location.host) !== -1) || performance.navigation.type === 1) {
+    if(arcsid && arcsid.sid && ((document.referrer || '').indexOf(window.location.host) !== -1 || performance.navigation.type === 1)) {
         (window as any).ARCNavigation = true;
         (window as any).sidinit = Date.now() - sidinit;
         console.log('[ARC] ' + (performance.navigation.type === 1 ? 'Refresh' : 'Navigation') +' Detected');
