@@ -76,7 +76,7 @@ export default class DomParser {
         } else {
             el.tagName = ['BODY'].indexOf(node.tagName) !== -1 ? 'DIV' : node.tagName;
             el.attributes = {};
-            el.type = 'element';
+            // el.type = 'element'; Commented to reduce data;
             if(this.forcedDimensionNodeNames.indexOf(node.tagName) !== -1) {
                 el.style = {
                     width: node.clientWidth,
