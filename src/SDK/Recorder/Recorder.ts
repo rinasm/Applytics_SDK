@@ -46,7 +46,7 @@ export default class Recorder {
         this.windowEventHandler = new WindowEventHandler({ getRecorder: ()=> this });
         this.webRequestHandler = new WebRequestHandler({ getRecorder: ()=> this });
         this.metaDataHandler = new MetaDataHandler({ getRecorder: ()=> this });
-        console.log('[ARC] Recorder Initiated. V 0.3.22');
+        console.log('[ARC] Recorder Initiated. V 0.3.23');
     }    
 
     start =(node: any)=> {
@@ -99,7 +99,9 @@ export default class Recorder {
     }
 
     recursivelyCheckTargetHasClickEvents:any =(target:any)=> {
-        if(target.onclick || target.onmousedown || target.onmouseup || target.onchange || 
+        console.log(target);
+        (window as any)._t = target;
+        if(target.onclick || target.onmousedown || target.onmouseup || target.onchange || target.href
             ['INPUT'].indexOf(target.tagName) !== -1) {
             return true;
         } else if(target.tagName !== 'BODY' && target.parentNode){
