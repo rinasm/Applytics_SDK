@@ -47,7 +47,7 @@ export default class Recorder {
         this.windowEventHandler = new WindowEventHandler({ getRecorder: ()=> this });
         this.webRequestHandler = new WebRequestHandler({ getRecorder: ()=> this });
         this.metaDataHandler = new MetaDataHandler({ getRecorder: ()=> this });
-        console.log('[ARC] Recorder Initiated. V 0.3.24');
+        console.log('[ARC] Recorder Initiated. V 0.3.25');
     }    
 
     start =(node: any)=> {
@@ -133,17 +133,34 @@ export default class Recorder {
 
         let scroll = {}
 
+
         if(node.rcid == null) {
+            if(!(window as any).scrollTarget) {
+                if(node.documentElement.scrollTop) {
+                    (window as any).scrollTarget = 'doc'
+                } else if(node.body && node.body.scrollTop) {
+                    (window as any).scrollTarget = 'body'
+                }
+            }
+            let el:any;
+            if((window as any).scrollTarget === 'doc') {
+                el = node.documentElement
+            } else if ((window as any).scrollTarget = 'body') {
+                el = node.body
+            } else {
+                el = {}
+            }
             scroll = {
-                scrollTop: node.documentElement.scrollTop,
-                scrollLeft: node.documentElement.scrollLeft,
+                scrollTop: el.scrollTop || 0,
+                scrollLeft: el.scrollLeft || 0,
                 rcid: -1,
             }
         } else {
             scroll = {
                 scrollTop: node.scrollTop,
                 scrollLeft: node.scrollLeft,
-                rcid: node.rcid
+                rcid: node.rcid,
+                scrollTarget: (window as any).scrollTarget
             }
         }
         (scroll as any).type = eventTypes.scroll;
