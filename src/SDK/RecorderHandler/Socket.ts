@@ -8,6 +8,9 @@ export default class Socket {
         socket.onopen = function(e:any) {
             console.log("[ARC] Connection established");
             socket.send('/connect '+ sid +' ' + aid + '0');
+            setInterval(()=> {
+                socket.send('/hb');
+            }, 30000)
         };
 
         socket.onmessage = function(event:any) {
