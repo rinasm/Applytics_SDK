@@ -1,3 +1,5 @@
+import Compressor from '../Compressor/Compressor';
+
 const generateRandomString =(length: Number)=> {
     let result           = '';
     let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -59,7 +61,7 @@ export const newBeacon =(topic: any, data: any)=> {
     let bid = getBeaconID();
     let bobj = {
         topic,
-        data,
+        data: Compressor.compressToBase64(data),
         bid,
         ca: Date.now()
     }

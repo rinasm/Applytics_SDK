@@ -2,6 +2,7 @@ import '../Helpers/DocReady';
 import {getSID, loadJS, parseURL, getStore, newBeacon, beaconSendSuccess, saveStore, initStore} from '../Helpers/Helpers';
 import Recorder from '../Recorder/Recorder';
 import {host, eventTypes} from '../Constants/Constants'; 
+import Socket from './Socket';
 
 interface RHArgs {
     clientId: String,
@@ -52,21 +53,11 @@ export default class RecorderHandler {
             this.recorder.getLiveUpdate(this.onRecorderUpdater);
             this.recorder.start(document.body);
 
-            loadJS('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js', ()=>{
-                console.log('[ARC] Socket loaded', performance.now());
-                let io = (window as any).io;
-                this.socket = io(host, {
-                    query:{
-                        sKey: this.sid,
-                        aKey: this.aid,
-                    },
-                    transports: ['websocket'],
-                })
-                this.socket.once('connect', this.onConnect);
-                this.socket.once('reconnect', this.onConnect);
-                this.socket.once('disconnect', this.onDisconnect);
-                this.socket.on('ack', this.onACK)
-            })
+            this.socket = new Socket(host, this.sid, this.aid);
+            this.socket.on('Accepted', this.onConnect);
+            // this.socket.once('reconnect', this.onConnect);
+            // this.socket.once('disconnect', this.onDisconnect);
+            this.socket.on('ack', this.onACK)
         }, window)
 
 
@@ -100,7 +91,7 @@ export default class RecorderHandler {
     }
 
     onConnect =()=> {
-        console.log('[ARC] Connected to Socket, STATUS: ', this.socket.connected);
+        console.log('[ARC] Connected to Socket');
         this.initiated = true;
         
         /**
@@ -171,7 +162,7 @@ export default class RecorderHandler {
         }
         for(let idx in beaconsToSend) {
             (window as any).dataSendQList[beaconsToSend[idx].bid] = Date.now();
-            this.socket.emit(beaconsToSend[idx].topic, beaconsToSend[idx].bid + beaconsToSend[idx].data);
+            this.socket.emit(beaconsToSend[idx].topic, beaconsToSend[idx].data, beaconsToSend[idx].bid);
         }
     }
     
