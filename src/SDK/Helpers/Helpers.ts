@@ -84,7 +84,7 @@ const removeItemFromStore =(key: any)=> {
 
 const updateStore =(data:any, sid:any)=> {
     let store = getCurrentStore();
-    addStoreLog(data, 'created', sid);
+    addStoreLog(data.bid, 'created', sid);
     store.data.push(data);
 }
 
