@@ -57,7 +57,8 @@ export const parseURL =(url:any)=> (url||'').split('.').join(urlParserKey)
  * 
  */
 
-export const newBeacon =(topic: any, data: any)=> {
+
+export const newBeacon =(topic: any, data: any, sid:any)=> {
     let bid = getBeaconID();
     let bobj = {
         topic,
@@ -65,7 +66,7 @@ export const newBeacon =(topic: any, data: any)=> {
         bid,
         ca: Date.now()
     }
-    updateStore(bobj);
+    updateStore(bobj, sid);
 }
 
 export const beaconSendSuccess =(bid: any)=> {
@@ -81,8 +82,9 @@ const removeItemFromStore =(key: any)=> {
     store.data = store.data.filter((d: any)=>d.bid !== key);
 }
 
-const updateStore =(data:any)=> {
+const updateStore =(data:any, sid:any)=> {
     let store = getCurrentStore();
+    addStoreLog(data, 'created', sid);
     store.data.push(data);
 }
 
@@ -123,7 +125,7 @@ export const initStore =(sid: any)=> {
     }
 }
 
-export const saveStore =()=> {
+export const saveStore =(sid:any)=> {
     let newstore = {
         ...((window as any).arcbeaconstore as any),
         data: []
@@ -147,13 +149,15 @@ export const saveStore =()=> {
             failed = true
         }
         if(failed) {
+            addStoreLog((window as any).arcbeaconstore.data[idx].bid, 'addedToLocalStore', sid);
             return;
         }
+        addStoreLog((window as any).arcbeaconstore.data[idx].bid, 'addedToLocalStore', sid);
         oldsdata = sdata;
     }
-    if(failed) {
-        return;
-    }
+    // if(failed) {
+    //     return;
+    // }
     let sdata = JSON.stringify(newstore); 
     let log = {
         size: sdata.length / 1024,
@@ -162,4 +166,28 @@ export const saveStore =()=> {
         sid: (window as any).arcbeaconstore.sid
     }
     localStorage.setItem('arcstore_log', JSON.stringify(log));
+}
+
+
+/**
+ * 
+ *     Store Log
+ * 
+ */
+
+export const addStoreLog  =(id:string, event:string, sid:any)=> {
+    let storeLog:any = localStorage.getItem('storeLog');
+    try {
+        storeLog = JSON.parse(storeLog)
+    } catch (e) {}
+
+    if(!storeLog || storeLog.sid !== sid) {
+        storeLog = {sid, logs: {}}
+    }
+    if(!storeLog.logs[id]) {
+        storeLog.logs[id] = { created: false, addedToLocalStore: false, sendToServer: false, ack: false }
+    }
+    storeLog.logs[id][event] = Date.now();
+    storeLog = JSON.stringify(storeLog);
+    localStorage.setItem('storeLog', storeLog)
 }

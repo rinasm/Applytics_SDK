@@ -1,5 +1,5 @@
 import '../Helpers/DocReady';
-import {getSID, loadJS, parseURL, getStore, newBeacon, beaconSendSuccess, saveStore, initStore} from '../Helpers/Helpers';
+import {getSID, loadJS, parseURL, getStore, addStoreLog, newBeacon, beaconSendSuccess, saveStore, initStore} from '../Helpers/Helpers';
 import Recorder from '../Recorder/Recorder';
 import {host, eventTypes} from '../Constants/Constants'; 
 import Socket from './Socket';
@@ -63,7 +63,7 @@ export default class RecorderHandler {
 
         window.onbeforeunload =()=> {
             this.emitToSocket('event', this.rcDataBuffer, false); 
-            saveStore();
+            saveStore(this.sid);
             this.setSessionDataToLS();
         }
     }
@@ -140,13 +140,14 @@ export default class RecorderHandler {
 
     onACK =(pid: any)=> {
         if(pid) {
+            addStoreLog(pid, 'ack', this.sid);
             beaconSendSuccess(pid);
             delete (window as any).dataSendQList[pid];
         }
     }
 
     socketEmit =(topic:string, data: any, sendToServer=true)=> {
-        newBeacon(topic, data);
+        newBeacon(topic, data, this.sid);
         if(sendToServer) {
             this.sendDataToServer();
         }
@@ -162,6 +163,7 @@ export default class RecorderHandler {
         }
         for(let idx in beaconsToSend) {
             (window as any).dataSendQList[beaconsToSend[idx].bid] = Date.now();
+            addStoreLog(beaconsToSend[idx].bid, 'sendToServer', this.sid);
             this.socket.emit(beaconsToSend[idx].topic, beaconsToSend[idx].data, beaconsToSend[idx].bid);
         }
     }
