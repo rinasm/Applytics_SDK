@@ -142,6 +142,7 @@ export class MessageHandler {
     onConnect =()=> {
         this.socketConnect = true;
         if(!(window as any).ARCNavigation) {
+            console.log('[ARC] Sending Session Meta');
             this.emit('beacon', this.sessionMeta, true);
         }
         this.requestDataUpload();
