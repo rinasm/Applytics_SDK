@@ -84,12 +84,12 @@ export class MessageHandler {
     }
 
     emit =(topic:any, data: any, prepend=false)=> {
-        console.log('[ARC] MessageHandler : ', topic);
         let beaconId: any = this.generateRandomString(5);
         let beacon: any = {
             beaconId,
             data: Compressor.compressToBase64(data),
             topic,
+            prepend,
             sendToServer: false,
             ack: false
         };
@@ -99,6 +99,7 @@ export class MessageHandler {
             this.getMemStore().data.push(beacon);
         }
         this.addStoreLog(beaconId, 'created'); 
+        if(this.socketConnect)
         this.requestDataUpload();
     }
 
@@ -142,7 +143,6 @@ export class MessageHandler {
     onConnect =()=> {
         this.socketConnect = true;
         if(!(window as any).ARCNavigation) {
-            console.log('[ARC] Sending Session Meta');
             this.emit('beacon', this.sessionMeta, true);
         }
         this.requestDataUpload();
@@ -168,11 +168,15 @@ export class MessageHandler {
 
     requestDataUpload =()=> {
         let dataToBeUploaded = this.getBeaconsForUpload();
-        console.log('[ARC] MessageHandler : RDU', dataToBeUploaded);
         if(dataToBeUploaded.length && this.socketConnect) {
             for(let beaconId in dataToBeUploaded.data) {
                 dataToBeUploaded.data[beaconId].sendToServer = true;
                 this.socket.emit(dataToBeUploaded.data[beaconId].topic, dataToBeUploaded.data[beaconId].data, beaconId);
+                if(dataToBeUploaded.data[beaconId].prepend) {
+                    console.log('[ARC] MessageHandler : RDU - SESSION META', dataToBeUploaded);
+                } else {
+                    console.log('[ARC] MessageHandler : RDU', dataToBeUploaded);
+                }
                 this.addStoreLog(beaconId, 'sendToServer');
             }
         }
