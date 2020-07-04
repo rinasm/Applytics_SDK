@@ -259,6 +259,7 @@ export class MessageHandler {
             }
 
             data.push(event);
+            rsid++;
         }
 
         return data;
