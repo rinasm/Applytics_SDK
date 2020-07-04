@@ -204,8 +204,8 @@ export default class RecorderHandler {
  
 
     addToBuffer =(event: any)=> {
-        if(!this.initiated)
-            return;
+        // if(!this.initiated)
+        //     return;
 
         this.rcDataBuffer.push(event);
     }
