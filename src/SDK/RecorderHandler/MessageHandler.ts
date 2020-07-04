@@ -51,6 +51,7 @@ export class MessageHandler {
         let localStore:any = localStorage.getItem('ms_store');
         let storeLog:any = localStorage.getItem('ms_store_log');
         console.log('[ARC] STORE RAW', localStore);
+        console.log('[ARC] STORE LOG RAW', storeLog);
         try  {
             localStore = JSON.parse(localStore);
             storeLog = JSON.parse(storeLog);
@@ -59,7 +60,8 @@ export class MessageHandler {
             localStore = null;
         }
 
-        if(!localStore || !storeLog || localStore.sid !== sid) {
+        console.log('[ARC] PARSED STORE', localStore, storeLog);
+        if(localStore == null || storeLog == null || localStore.sid !== sid) {
             localStore = {
                 sid, 
                 data: [],
@@ -172,12 +174,7 @@ export class MessageHandler {
         if(dataToBeUploaded.length && this.socketConnect) {
             for(let beaconId in dataToBeUploaded.data) {
                 dataToBeUploaded.data[beaconId].sendToServer = true;
-                this.socket.emit(dataToBeUploaded.data[beaconId].topic, dataToBeUploaded.data[beaconId].data, beaconId);
-                if(dataToBeUploaded.data[beaconId].prepend) {
-                    console.log('[ARC] MessageHandler : RDU - SESSION META', dataToBeUploaded);
-                } else {
-                    console.log('[ARC] MessageHandler : RDU', dataToBeUploaded);
-                }
+                this.socket.emit(dataToBeUploaded.data[beaconId].topic, dataToBeUploaded.data[beaconId].data, beaconId); 
                 this.addStoreLog(beaconId, 'sendToServer');
             }
         }
