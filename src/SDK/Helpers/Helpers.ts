@@ -1,5 +1,3 @@
-import Compressor from '../Compressor/Compressor';
-
 const generateRandomString =(length: Number)=> {
     let result           = '';
     let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

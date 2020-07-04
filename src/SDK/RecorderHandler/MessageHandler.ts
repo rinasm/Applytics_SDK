@@ -13,6 +13,7 @@ export class MessageHandler {
     aid:any;
     cid:any;
     packetIndex:any = 0;
+    rapidStoreId:any = 0;
 
     constructor(sid: any, aid:any, cid:any, args: any) {
 
@@ -49,6 +50,7 @@ export class MessageHandler {
             if(this.dataBuffer && this.dataBuffer.length) {
                 this.emitToSocket('event', this.dataBuffer);
                 this.dataBuffer = [];
+                this.cleanRapidStore();
             }
         }, 1000); 
     }
@@ -79,9 +81,7 @@ export class MessageHandler {
 
     initStore =(sid: any)=> {
         let localStore:any = localStorage.getItem('ms_store');
-        let storeLog:any = localStorage.getItem('ms_store_log');
-        console.log('[ARC] STORE RAW', localStore);
-        console.log('[ARC] STORE LOG RAW', storeLog);
+        let storeLog:any = localStorage.getItem('ms_store_log'); 
         try  {
             localStore = JSON.parse(localStore);
             storeLog = JSON.parse(storeLog);
@@ -90,7 +90,6 @@ export class MessageHandler {
             localStore = null;
         }
 
-        console.log('[ARC] PARSED STORE', localStore, storeLog);
         if(localStore == null || storeLog == null || localStore.sid !== sid) {
             localStore = {
                 sid, 
@@ -102,8 +101,18 @@ export class MessageHandler {
         console.log('[ARC] Initial Store', localStore.data.length, storeLog);
 
         (window as any).localStore = localStore; 
-        // localStorage.setItem('ms_store', localStore)
         localStorage.setItem('ms_store_log', JSON.stringify(storeLog))
+
+        /**
+         * 
+         *  Rapid Store
+         * 
+         */
+
+        let rsData = this.getRapidStore();
+        console.log('[ARC] Rapid Store Data', rsData);
+        this.emitToSocket('event', rsData);
+
     }
 
     generateRandomString =(length: Number)=> {
@@ -222,7 +231,37 @@ export class MessageHandler {
     }
 
     addToRapidStore =(event:any)=> {
-        
+        localStorage.setItem('rs_'+ this.rapidStoreId, JSON.stringify(event));
+        this.rapidStoreId++;
+    }
+
+    cleanRapidStore =()=> {
+        for(let idx=0; idx<=this.rapidStoreId; idx++) {
+            localStorage.removeItem('rs_'+idx);
+        }
+        this.rapidStoreId = 0;
+    }
+
+    getRapidStore =()=> {
+        let data = [];
+        let event = null;
+        let rsid = 0;
+
+        while(true) {
+            event = localStorage.getItem('rs_'+rsid);
+            if(!event)
+                break;
+            
+            try {
+                event = JSON.parse(event)
+            } catch (e) {
+                break;
+            }
+
+            data.push(event);
+        }
+
+        return data;
     }
 
     getPID =()=> window.location.pathname
