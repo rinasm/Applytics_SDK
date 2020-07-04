@@ -8,9 +8,17 @@ export class MessageHandler {
     sessionMeta: any;
     onBeforeUnload: any;
     socketConnect: any;
+    dataBuffer: Array<any> = [];
+    sid:any;
+    aid:any;
+    cid:any;
+    packetIndex:any = 0;
 
-    constructor(sid: any, aid:any, args: any) {
+    constructor(sid: any, aid:any, cid:any, args: any) {
 
+        this.sid = sid;
+        this.aid = aid;
+        this.cid = cid;
         this.sessionMeta = args.sessionMeta;
         this.onBeforeUnload = args.onBeforeUnload;
 
@@ -31,11 +39,18 @@ export class MessageHandler {
          *  Save
          */
 
-
         window.onbeforeunload =()=> { 
             this.onBeforeUnload();
             this.saveStore();
         }
+
+
+        setInterval(()=> {
+            if(this.dataBuffer && this.dataBuffer.length) {
+                this.emitToSocket('event', this.dataBuffer);
+                this.dataBuffer = [];
+            }
+        }, 1000); 
     }
 
     saveStore =()=> {
@@ -194,5 +209,45 @@ export class MessageHandler {
             }
         }
     }
+
+    /**
+     * 
+     *  Message Wrap
+     * 
+     */
+
+    onMessage =(event: any)=> {
+        this.dataBuffer.push(event);
+        this.addToRapidStore(event);
+    }
+
+    addToRapidStore =(event:any)=> {
+        
+    }
+
+    getPID =()=> window.location.pathname
+
+    emitToSocket =(type:String, data:any)=> {
+        let packet = {
+            sid: this.sid,
+            cid: this.cid,
+            aid: this.aid,
+            pid: this.getPID(),
+            index: this.packetIndex,
+            type,
+            timestamp: Date.now(),
+            data
+        };
+        this.packetIndex+=1;
+        if((window as any).ARCDev) {
+            let size:any =  JSON.stringify(packet).length * 2;
+            (window as any).log('[ARC] Sending Data', this.dataBuffer.length);
+            (window as any).log('[ARC] Packet size', size, 'Bytes, ', Math.ceil(size/1024), 'kb');
+            (window as any).log(packet);
+        }
+        let msgstr = JSON.stringify(packet);
+        this.emit('beacon', msgstr);
+    }
+
 
 }

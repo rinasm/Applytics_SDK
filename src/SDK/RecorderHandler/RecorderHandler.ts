@@ -1,8 +1,6 @@
 import '../Helpers/DocReady';
-import {getSID, loadJS, parseURL, getStore, addStoreLog, newBeacon, beaconSendSuccess, saveStore, initStore} from '../Helpers/Helpers';
-import Recorder from '../Recorder/Recorder';
-// import {host, eventTypes} from '../Constants/Constants'; 
-// import Socket from './Socket';
+import {getSID, parseURL} from '../Helpers/Helpers';
+import Recorder from '../Recorder/Recorder'; 
 import { MessageHandler } from './MessageHandler';
 
 interface RHArgs {
@@ -16,12 +14,10 @@ export default class RecorderHandler {
     sid: String;
     cid: String;
     aid: String;
-    rcDataBuffer: Array<any> = [];
     recorderData: Array<any> = [];
     recorder: any = null;
     socket: any;
-    initiated: Boolean = false;
-    packetIndex: any = 0;  
+    initiated: Boolean = false; 
     messageHandler: any;
 
 
@@ -31,7 +27,6 @@ export default class RecorderHandler {
         this.aid = args.appId;
         this.cid = args.clientId;
 
-        initStore(this.sid);
         (window as any).dataSendQList = {};
 
         if(!(window as any).ARCNavigation && args.arccsrc) {
@@ -53,34 +48,14 @@ export default class RecorderHandler {
                 aid: this.aid
             });
             this.recorder.getLiveUpdate(this.onRecorderUpdater);
-            this.messageHandler = new MessageHandler(this.sid, this.aid, {
+            this.messageHandler = new MessageHandler(this.sid, this.aid, this.cid, {
                 sessionMeta: this.getSessionMeta(),
                 onBeforeUnload: ()=> this.setSessionDataToLS()
             });
             this.recorder.start(document.body); 
             this.setSessionDataToLS();
-
-            setInterval(()=> {
-                if(this.rcDataBuffer && this.rcDataBuffer.length) {
-                    this.emitToSocket('event', this.rcDataBuffer);
-                    this.rcDataBuffer = [];
-                }
-                this.setSessionDataToLS();
-            }, 1000);
-
-            // this.socket = new Socket(host, this.sid, this.aid);
-            // this.socket.on('Accepted', this.onConnect);
-            // this.socket.once('reconnect', this.onConnect);
-            // this.socket.once('disconnect', this.onDisconnect);
-            // this.socket.on('ack', this.onACK)
-        }, window)
-
-
-        // window.onbeforeunload =()=> {
-        //     this.emitToSocket('event', this.rcDataBuffer, false); 
-        //     saveStore(this.sid);
-        //     this.setSessionDataToLS();
-        // }
+            setInterval(this.setSessionDataToLS, 1000); 
+        }, window) 
     }
 
     getARCSIDMeta =(onClose: any)=> {
@@ -98,121 +73,12 @@ export default class RecorderHandler {
 
         let meta = this.getARCSIDMeta(false) as any;
         localStorage.setItem('arcsid', JSON.stringify(meta));
-    }
+    } 
  
-    // onDisconnect =()=> {
-    //     console.log("socket disconnected from client");
-    //     this.initiated = false;
-    // }
-
-    // onConnect =()=> {
-    //     console.log('[ARC] Connected to Socket');
-    //     this.initiated = true;
-        
-    //     /**
-    //      *  Sending Session Meta
-    //      */
-
-    //     if(!(window as any).ARCNavigation) {
-
-    //         /**
-    //          *  Emiting Session Meta 
-    //          */
-
-    //         let sessionMetaData = this.getSessionMeta();
-    //         this.socketEmit('beacon', JSON.stringify(sessionMetaData));
-    //         console.log('[ARC] Sending Session Meta');
-
-    //     } else {
-
-    //         /**
-    //          *  Sending Pre-Bufferer
-    //          */
-    //         let store = getStore();
-    //         console.log('Pre-Buffered Data', store, store.length, JSON.stringify(store).length / 1024)
-    //         this.sendDataToServer();
-    //     }
-
-    //     /**
-    //      *  Sending Buffered Data
-    //      */
-    //     for(let idx in this.recorderData) {
-    //         this.addToBuffer(this.recorderData[idx]);
-    //     }
-    //     this.recorderData = [];
-
-    //     /**
-    //      *  Initiating Sender
-    //      */
-    // }
-
-    // onACK =(pid: any)=> {
-    //     if(pid) {
-    //         addStoreLog(pid, 'ack', this.sid);
-    //         beaconSendSuccess(pid);
-    //         delete (window as any).dataSendQList[pid];
-    //     }
-    // }
-
-    // socketEmit =(topic:string, data: any, sendToServer=true)=> {
-    //     this.messageHandler.newBeacon(topic, data, this.sid);
-    //     // if(sendToServer) {
-    //     //     this.sendDataToServer();
-    //     // }
-    // }
-
-    // sendDataToServer =()=> {
-    //     let store = getStore();
-    //     let beaconsToSend = [];
-    //     for(let idx in store) {
-    //         if(!(window as any).dataSendQList[store[idx].bid]) {
-    //             beaconsToSend.push(store[idx]);
-    //         }
-    //     }
-    //     for(let idx in beaconsToSend) {
-    //         (window as any).dataSendQList[beaconsToSend[idx].bid] = Date.now();
-    //         addStoreLog(beaconsToSend[idx].bid, 'sendToServer', this.sid);
-    //         this.socket.emit(beaconsToSend[idx].topic, beaconsToSend[idx].data, beaconsToSend[idx].bid);
-    //     }
-    // }
-    
-
-    emitToSocket =(type:String, data:any)=> {
-        let packet = {
-            sid: this.sid,
-            cid: this.cid,
-            aid: this.aid,
-            pid: this.getPID(),
-            index: this.packetIndex,
-            type,
-            timestamp: Date.now(),
-            data
-        };
-        this.packetIndex+=1;
-        if((window as any).ARCDev) {
-            let size:any =  JSON.stringify(packet).length * 2;
-            (window as any).log('[ARC] Sending Data', this.rcDataBuffer.length);
-            (window as any).log('[ARC] Packet size', size, 'Bytes, ', Math.ceil(size/1024), 'kb');
-            (window as any).log(packet);
-        }
-        let msgstr = JSON.stringify(packet);
-        this.messageHandler.emit('beacon', msgstr);
-        return packet;
-    }
-
-    getPID =()=> window.location.pathname
- 
-
-    addToBuffer =(event: any)=> {
-        // if(!this.initiated)
-        //     return;
-
-        this.rcDataBuffer.push(event);
-    }
 
     onRecorderUpdater =(event:any)=> {
         this.recorderData.push(event);
-        this.addToBuffer(event);
+        this.messageHandler.onMessage(event);
     }
 
     getSessionMeta =()=> {
