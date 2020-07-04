@@ -50,6 +50,7 @@ export class MessageHandler {
     initStore =(sid: any)=> {
         let localStore:any = localStorage.getItem('ms_store');
         let storeLog:any = localStorage.getItem('ms_store_log');
+        console.log('[ARC] STORE RAW', localStore);
         try  {
             localStore = JSON.parse(localStore);
             storeLog = JSON.parse(storeLog);
@@ -69,7 +70,7 @@ export class MessageHandler {
         console.log('[ARC] Initial Store', localStore.data.length, storeLog);
 
         (window as any).localStore = localStore; 
-        localStorage.setItem('ms_store', localStore)
+        // localStorage.setItem('ms_store', localStore)
         localStorage.setItem('ms_store_log', storeLog)
     }
 
@@ -143,7 +144,7 @@ export class MessageHandler {
     onConnect =()=> {
         this.socketConnect = true;
         if(!(window as any).ARCNavigation) {
-            this.emit('beacon', this.sessionMeta, true);
+            this.emit('beacon', JSON.stringify(this.sessionMeta), true);
         }
         this.requestDataUpload();
 
