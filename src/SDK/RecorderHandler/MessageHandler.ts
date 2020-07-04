@@ -73,7 +73,7 @@ export class MessageHandler {
 
         (window as any).localStore = localStore; 
         // localStorage.setItem('ms_store', localStore)
-        localStorage.setItem('ms_store_log', storeLog)
+        localStorage.setItem('ms_store_log', JSON.stringify(storeLog))
     }
 
     generateRandomString =(length: Number)=> {
@@ -134,7 +134,7 @@ export class MessageHandler {
             storeLog[beaconId] = { created: false, addedToLS: false, sendToServer: false, ack: false };
         }
         storeLog[beaconId][event] = Date.now();
-        localStorage.setItem('ms_store_log', storeLog);
+        localStorage.setItem('ms_store_log', JSON.stringify(storeLog));
     }
 
     /**
