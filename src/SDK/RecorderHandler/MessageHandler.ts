@@ -39,11 +39,26 @@ export class MessageHandler {
     }
 
     saveStore =()=> {
-        this.getMemStore().data = this.getMemStore().data.filter((beacon:any)=> !beacon.ack);
-        let localStore = JSON.stringify(this.getMemStore());
-        localStorage.setItem('ms_store', localStore);
-        for(let idx in this.getMemStore().data) {
-            this.addStoreLog(this.getMemStore().data[idx].beaconId, 'addedToLS');
+        let data = this.getMemStore().data.
+            filter((beacon:any)=> !beacon.ack).
+            map((beacon:any)=> {
+                beacon.sendToServer = false;
+                return beacon;
+            });
+
+        this.getMemStore().data = [];
+        for(let idx=data.length-1; idx>=0; idx--) {
+            this.getMemStore().data.push(data[idx]);
+            let localStore = JSON.stringify(this.getMemStore());
+            try {
+                localStorage.setItem('ms_store', localStore);
+            } catch (e) {
+                this.addStoreLog(data[idx].beaconId, 'failedLS');
+                break;
+            }
+        }
+        for(let idx in data) {
+            this.addStoreLog(data[idx].beaconId, 'addedToLS');
         }
     }
 
@@ -131,7 +146,7 @@ export class MessageHandler {
             storeLog = {};
         }
         if(!storeLog[beaconId]) {
-            storeLog[beaconId] = { created: false, addedToLS: false, sendToServer: false, ack: false };
+            storeLog[beaconId] = { created: false, addedToLS: false, sendToServer: false, ack: false, failedLS: false };
         }
         storeLog[beaconId][event] = Date.now();
         localStorage.setItem('ms_store_log', JSON.stringify(storeLog));
