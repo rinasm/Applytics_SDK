@@ -196,7 +196,7 @@ export default class RecorderHandler {
             (window as any).log(packet);
         }
         let msgstr = JSON.stringify(packet);
-        this.messageHandler.emit('beacon', msgstr, this.sid);
+        this.messageHandler.emit('beacon', msgstr);
         return packet;
     }
 
