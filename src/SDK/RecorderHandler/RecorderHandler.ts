@@ -177,7 +177,7 @@ export default class RecorderHandler {
     // }
     
 
-    emitToSocket =(type:String, data:any, sendToServer=true)=> {
+    emitToSocket =(type:String, data:any)=> {
         let packet = {
             sid: this.sid,
             cid: this.cid,
@@ -196,10 +196,7 @@ export default class RecorderHandler {
             (window as any).log(packet);
         }
         let msgstr = JSON.stringify(packet);
-        if(sendToServer) {
-            // this.socketEmit('beacon', msgstr);
-            this.messageHandler.emit('beacon', msgstr, this.sid);
-        }
+        this.messageHandler.emit('beacon', msgstr, this.sid);
         return packet;
     }
 

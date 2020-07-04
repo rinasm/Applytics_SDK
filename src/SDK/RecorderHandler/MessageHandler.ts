@@ -84,6 +84,7 @@ export class MessageHandler {
     }
 
     emit =(topic:any, data: any, prepend=false)=> {
+        console.log('[ARC] MessageHandler : ', topic);
         let beaconId: any = this.generateRandomString(5);
         let beacon: any = {
             beaconId,
@@ -166,6 +167,7 @@ export class MessageHandler {
 
     requestDataUpload =()=> {
         let dataToBeUploaded = this.getBeaconsForUpload();
+        console.log('[ARC] MessageHandler : RDU', dataToBeUploaded);
         if(dataToBeUploaded.length && this.socketConnect) {
             for(let beaconId in dataToBeUploaded.data) {
                 dataToBeUploaded.data[beaconId].sendToServer = true;
