@@ -7,7 +7,7 @@ export default class Socket {
         socket = new WebSocket(host);
         socket.onopen = function(e:any) {
             console.log("[ARC] Connection established");
-            socket.send('/connect '+ sid +' ' + aid + '0');
+            socket.send('/connect '+ sid +' ' + aid);
             setInterval(()=> {
                 socket.send('/hb');
             }, 30000)
