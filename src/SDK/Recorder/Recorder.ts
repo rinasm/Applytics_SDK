@@ -47,7 +47,7 @@ export default class Recorder {
         this.windowEventHandler = new WindowEventHandler({ getRecorder: ()=> this });
         this.webRequestHandler = new WebRequestHandler({ getRecorder: ()=> this });
         this.metaDataHandler = new MetaDataHandler({ getRecorder: ()=> this });
-        if((window as any).__ARC_DEV__) console.log('[ARC] Recorder Initiated. V 0.6.0');
+        if((window as any).__ARC_DEV__) console.log('[ARC] Recorder Initiated. V 0.6.1');
     }    
 
     start =(node: any)=> {
@@ -212,11 +212,25 @@ export default class Recorder {
 
     handleTouch =(type:any, event:any)=> {
         let touches:any = {};
+        let touch:any;
         for(let idx in event.touches) {
-            touches[event.touches[idx].identifier] = {
-                x: event.touches[idx].pageX - document.documentElement.scrollLeft,
-                y: event.touches[idx].pageY - document.documentElement.scrollTop,
+            if(type === eventTypes.touchStart) {
+                let target = event && event.target ? event.target : null;
+                let isResponsive = target !== null ? this.recursivelyCheckTargetHasClickEvents(target) : false;
+                let isLink = target !== null && target.href ? true : false;
+                touch = {
+                    isResponsive,
+                    isLink,
+                    x: event.touches[idx].pageX - document.documentElement.scrollLeft,
+                    y: event.touches[idx].pageY - document.documentElement.scrollTop,
+                }
+            } else {
+                touch = {
+                    x: event.touches[idx].pageX - document.documentElement.scrollLeft,
+                    y: event.touches[idx].pageY - document.documentElement.scrollTop,
+                }
             }
+            touches[event.touches[idx].identifier] = touch
         }
         this.generateEvent({
             touches,
