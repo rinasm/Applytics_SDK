@@ -19,6 +19,9 @@ export const eventTypes = {
     hashChanged: 'hashChanged',
     styleSheetString: 'styleSheetString',
     error: 'error',
+    touchStart: 'touchStart',
+    touchEnd: 'touchEnd',
+    touchMove: 'touchMove',
 }
 export const commands = {
     PASTE: "PASTE",

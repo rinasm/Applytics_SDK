@@ -42,7 +42,7 @@ export default 'doc ready';
                 (document as any).attachEvent("onreadystatechange", readyStateChange);
                 (document as any).attachEvent("onload", ready);
             } else {
-                console.warn('[ARC]: Failed to Trigger Doc ready')
+                if((window as any).__ARC_DEV__) console.warn('[ARC]: Failed to Trigger Doc ready')
             }
             readyEventHandlersInstalled = true;
         }

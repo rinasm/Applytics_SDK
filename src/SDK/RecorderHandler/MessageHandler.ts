@@ -98,7 +98,7 @@ export class MessageHandler {
             }
             storeLog = {}
         }
-        console.log('[ARC] Initial Store', localStore.data.length, storeLog);
+        if((window as any).__ARC_DEV__) console.log('[ARC] Initial Store', localStore.data.length, storeLog);
 
         (window as any).localStore = localStore; 
         localStorage.setItem('ms_store_log', JSON.stringify(storeLog))
@@ -110,7 +110,7 @@ export class MessageHandler {
          */
 
         let rsData = this.getRapidStore();
-        console.log('[ARC] Rapid Store Data', rsData);
+        if((window as any).__ARC_DEV__) console.log('[ARC] Rapid Store Data', rsData);
         this.emitToSocket('event', rsData);
 
     }

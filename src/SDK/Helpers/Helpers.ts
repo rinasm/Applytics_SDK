@@ -24,14 +24,14 @@ export const getSID =()=> {
     if(arcsid && arcsid.sid && ((document.referrer || '').indexOf(window.location.host) !== -1 || performance.navigation.type === 1)) {
         (window as any).ARCNavigation = true;
         (window as any).sidinit = Date.now() - sidinit;
-        console.log('[ARC] ' + (performance.navigation.type === 1 ? 'Refresh' : 'Navigation') +' Detected');
-        console.log('[ARC] Total Previous Duration', (window as any).sidinit);
-        console.log('[ARC] Current SID', arcsid.sid);
+        if((window as any).__ARC_DEV__) console.log('[ARC] ' + (performance.navigation.type === 1 ? 'Refresh' : 'Navigation') +' Detected');
+        if((window as any).__ARC_DEV__) console.log('[ARC] Total Previous Duration', (window as any).sidinit);
+        if((window as any).__ARC_DEV__) console.log('[ARC] Current SID', arcsid.sid);
         return arcsid.sid
     }
     if(sid == null) {
         sid = generateSID();
-        console.log('[ARC] Generating SID', sid)
+        if((window as any).__ARC_DEV__) console.log('[ARC] Generating SID', sid)
     }
     localStorage.setItem('sidinit', (Date.now() - (performance as any).now()) as any);
     return sid;

@@ -6,7 +6,7 @@ export default class Socket {
     constructor(host:any, sid:any, aid:any) {
         socket = new WebSocket(host);
         socket.onopen = function(e:any) {
-            console.log("[ARC] Connection established");
+            if((window as any).__ARC_DEV__) console.log('[ARC] Connection established');
             socket.send('/connect '+ sid +' ' + aid);
             setInterval(()=> {
                 socket.send('/hb');
@@ -24,9 +24,9 @@ export default class Socket {
 
         socket.onclose = function(event:any) {
             if (event.wasClean) {
-                console.log(`[ARC] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+                if((window as any).__ARC_DEV__) console.log('[ARC] Connection closed cleanly, code=', event.code, 'reason=', event.reason);
             } else {
-                console.log('[ARC] Connection died');
+                if((window as any).__ARC_DEV__) console.log('[ARC] Connection died');
             }
         };
     }

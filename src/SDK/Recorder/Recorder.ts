@@ -47,21 +47,21 @@ export default class Recorder {
         this.windowEventHandler = new WindowEventHandler({ getRecorder: ()=> this });
         this.webRequestHandler = new WebRequestHandler({ getRecorder: ()=> this });
         this.metaDataHandler = new MetaDataHandler({ getRecorder: ()=> this });
-        console.log('[ARC] Recorder Initiated. V 0.5.15');
+        if((window as any).__ARC_DEV__) console.log('[ARC] Recorder Initiated. V 0.6.0');
     }    
 
     start =(node: any)=> {
-        console.log('[ARC] Started Recording', performance.now());
+        if((window as any).__ARC_DEV__) console.log('[ARC] Started Recording', performance.now());
         this.domParser.recordStyle();
         this.bindScroll(window);
         this.bindMouseEvent(document);
         this.windowEventHandler.checkConsoleStatus(false);
-        this.domParser.takeSnapshot(node, true);
+        this.domParser.takeSnapshot(node, true); 
         observer = new MutationObserver((mutations:any)=> {
             this.mutaionHandler.handleMutations(mutations);
         });
         observer.observe(node, recorderConfig); 
-    }
+    } 
 
     /**
      * 
@@ -85,6 +85,9 @@ export default class Recorder {
 
     bindMouseEvent =(node:any)=> {
         node.addEventListener('mousemove', this.handleMouseMove);
+        node.addEventListener('touchstart', this.handleTouchStart);
+        node.addEventListener('touchmove', this.handleTouchMove);
+        node.addEventListener('touchend', this.handleTouchEnd);
         node.addEventListener('click', this.handleMouseClick);
     }
 
@@ -184,6 +187,41 @@ export default class Recorder {
                 type: eventTypes.mouseMove
             });     
         }
+    }
+
+    handleTouchStart =(event:any)=> {
+        if(window.performance.now() - this.lastMouseMoveEventGenerated > this.mouseMoveThreshold) {
+            this.lastMouseMoveEventGenerated = window.performance.now();
+            this.handleTouch(eventTypes.touchStart, event);  
+        }
+    }
+
+    handleTouchEnd =(event:any)=> {
+        if(window.performance.now() - this.lastMouseMoveEventGenerated > this.mouseMoveThreshold) {
+            this.lastMouseMoveEventGenerated = window.performance.now();
+            this.handleTouch(eventTypes.touchEnd, event);  
+        }
+    }
+
+    handleTouchMove =(event:any)=> {
+        if(window.performance.now() - this.lastMouseMoveEventGenerated > this.mouseMoveThreshold) {
+            this.lastMouseMoveEventGenerated = window.performance.now();
+            this.handleTouch(eventTypes.touchMove, event);
+        }
+    }
+
+    handleTouch =(type:any, event:any)=> {
+        let touches:any = {};
+        for(let idx in event.touches) {
+            touches[event.touches[idx].identifier] = {
+                x: event.touches[idx].pageX - document.documentElement.scrollLeft,
+                y: event.touches[idx].pageY - document.documentElement.scrollTop,
+            }
+        }
+        this.generateEvent({
+            touches,
+            type
+        });     
     }
 
     handleMouseClick =(event:any)=> {
