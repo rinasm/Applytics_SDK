@@ -190,12 +190,10 @@ export default class Recorder {
     }
 
     handleTouchStart =(event:any)=> {
-        this.lastMouseMoveEventGenerated = window.performance.now();
         this.handleTouch(eventTypes.touchStart, event);  
     }
 
     handleTouchEnd =(event:any)=> { 
-        this.lastMouseMoveEventGenerated = window.performance.now();
         this.handleTouch(eventTypes.touchEnd, event);  
     }
 
