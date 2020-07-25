@@ -93,7 +93,7 @@ export default class RecorderHandler {
             aid: this.aid,
             type:'session',
             deviceType: meta.deviceType,
-            createdAt: Date.now(),
+            // createdAt: Date.now(),
             metaData: {
               browserName: meta.browser,
               pageURL: parseURL(window.location.href),
