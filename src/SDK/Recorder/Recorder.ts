@@ -213,7 +213,7 @@ export default class Recorder {
     handleTouch =(type:any, event:any)=> {
         let touches:any = {};
         let touch:any;
-        for(let idx in event.touches) {
+        for(let idx=0; idx<event.touches.length-1; idx++) {
             touch = {
                 x: event.touches[idx].pageX - document.documentElement.scrollLeft,
                 y: event.touches[idx].pageY - document.documentElement.scrollTop,
