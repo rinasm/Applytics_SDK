@@ -43,7 +43,8 @@ export default class MetaDataHandler {
     }
 
     isMobileDevice() {
-        return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1) || (window.innerHeight / 1.5 > window.innerWidth);
+        // return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1) || (window.innerHeight / 1.5 > window.innerWidth);
+        return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
     };
 
     isTablet() {

@@ -2,6 +2,7 @@ import '../Helpers/DocReady';
 import {getSID, parseURL} from '../Helpers/Helpers';
 import Recorder from '../Recorder/Recorder'; 
 import { MessageHandler } from './MessageHandler';
+import { SDK_VERSION } from '../Constants/Constants';
 
 interface RHArgs {
     clientId: String,
@@ -106,7 +107,8 @@ export default class RecorderHandler {
               referrer: parseURL(meta.referrer || null),
               browserVersion: meta.browser,
               osVersion: meta.os,
-              userAgent: navigator.userAgent
+              userAgent: navigator.userAgent,
+              SDK_VERSION
             },
         }
     }

@@ -16,7 +16,6 @@ const startARC=(clientId:String, appId:String, src:any, arccsrc=false)=> {
         __ARC_DEV__ = false;
     }
     (window as any).__ARC_DEV__ = __ARC_DEV__;
-    new RecorderHandler({clientId, appId, arccsrc});
 
     /**
      *  Validating SDK Host persmission
@@ -26,7 +25,7 @@ const startARC=(clientId:String, appId:String, src:any, arccsrc=false)=> {
         if((window as any).__ARC_DEV__) console.error('[ARC] Invalid host ' + host + '. This host don\'t have permission to run Applytics SDK.');
     } else {
         if((window as any).__ARC_DEV__) console.log('[ARC] Recorder Handler Initiated, Client ID', host, clientId, 'App ID', appId, performance.now());
-        
+        new RecorderHandler({clientId, appId, arccsrc});
     }
     if(src) {
         localStorage.setItem('arccsrc', src);

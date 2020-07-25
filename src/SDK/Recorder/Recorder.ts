@@ -1,4 +1,4 @@
-import { eventTypes } from '../Constants/Constants';
+import { eventTypes, SDK_VERSION } from '../Constants/Constants';
 import {recorderConfig} from '../Constants/Config';
 import MutationHandler from '../MutationHandler/MutationHandler';
 import ConsoleHandler from '../ConsoleHandler/ConsoleHandler';
@@ -47,7 +47,7 @@ export default class Recorder {
         this.windowEventHandler = new WindowEventHandler({ getRecorder: ()=> this });
         this.webRequestHandler = new WebRequestHandler({ getRecorder: ()=> this });
         this.metaDataHandler = new MetaDataHandler({ getRecorder: ()=> this });
-        if((window as any).__ARC_DEV__) console.log('[ARC] Recorder Initiated. V 0.6.2');
+        if((window as any).__ARC_DEV__) console.log('[ARC] Recorder Initiated. V '+ SDK_VERSION);
     }    
 
     start =(node: any)=> {
