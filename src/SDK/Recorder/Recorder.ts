@@ -190,17 +190,13 @@ export default class Recorder {
     }
 
     handleTouchStart =(event:any)=> {
-        if(window.performance.now() - this.lastMouseMoveEventGenerated > this.mouseMoveThreshold) {
-            this.lastMouseMoveEventGenerated = window.performance.now();
-            this.handleTouch(eventTypes.touchStart, event);  
-        }
+        this.lastMouseMoveEventGenerated = window.performance.now();
+        this.handleTouch(eventTypes.touchStart, event);  
     }
 
-    handleTouchEnd =(event:any)=> {
-        if(window.performance.now() - this.lastMouseMoveEventGenerated > this.mouseMoveThreshold) {
-            this.lastMouseMoveEventGenerated = window.performance.now();
-            this.handleTouch(eventTypes.touchEnd, event);  
-        }
+    handleTouchEnd =(event:any)=> { 
+        this.lastMouseMoveEventGenerated = window.performance.now();
+        this.handleTouch(eventTypes.touchEnd, event);  
     }
 
     handleTouchMove =(event:any)=> {
