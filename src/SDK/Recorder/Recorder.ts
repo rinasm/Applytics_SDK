@@ -293,13 +293,17 @@ export default class Recorder {
 
     getTime =()=> ((window as any).sidinit || 0) + parseFloat(performance.now().toFixed(4));
 
+    getEventID =()=> {
+        let id = parseInt((localStorage.getItem('arceid') as any) || 0, 10) || 0
+        localStorage.setItem('arceid', ''+id+1);
+        return id;
+    }
+
     generateEvent =(action:any)=> {
         let event:any = {
-            time: this.getTime()
+            time: this.getTime(),
+            eid: this.getEventID()
         } 
-        if(action.type === eventTypes.snapshot) {
-            if((window as any).__ARC_DEV__) console.log('[ARC] Taking Snapshot', event.time)
-        }
         event = {
             ...event,
             ...action,
