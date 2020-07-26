@@ -295,7 +295,7 @@ export default class Recorder {
 
     getEventID =()=> {
         let id = parseInt((localStorage.getItem('arceid') as any) || 0, 10) || 0
-        localStorage.setItem('arceid', ''+id+1);
+        localStorage.setItem('arceid', ''+(id+1));
         return id;
     }
 
