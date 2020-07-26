@@ -155,6 +155,7 @@ export default class DomParser {
         this.getRecorder().generateEvent({
             type: eventTypes.snapshot, 
             dom: clone, 
+            title: document.title,
             cssRules: this.cssRules,  
             initial,
             screenWidth: window.innerWidth,
