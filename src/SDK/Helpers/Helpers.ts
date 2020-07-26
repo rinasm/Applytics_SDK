@@ -31,6 +31,7 @@ export const getSID =()=> {
     }
     if(sid == null) {
         sid = generateSID();
+        (window as any).rootSession = true;
         if((window as any).__ARC_DEV__) console.log('[ARC] Generating SID', sid)
     }
     localStorage.setItem('sidinit', (Date.now() - (performance as any).now()) as any);
