@@ -297,6 +297,9 @@ export default class Recorder {
         let event:any = {
             time: this.getTime()
         } 
+        if(action.type === eventTypes.snapshot) {
+            if((window as any).__ARC_DEV__) console.log('[ARC] Taking Snapshot', event.time)
+        }
         event = {
             ...event,
             ...action,
