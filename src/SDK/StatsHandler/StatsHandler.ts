@@ -8,10 +8,12 @@ export default class StatsHandler {
     ec: { key: 'errorCount' },
   }
   messageHandler: any;
+  sid: String;
 
   constructor(args: any) {
     args.recorder.onEvent = this.onEvent;
     this.messageHandler = args.messageHandler;
+    this.sid = args.sid;
   }
 
   onEvent = (event:any) => {
@@ -60,7 +62,7 @@ export default class StatsHandler {
     for(let key in _currentStats) {
       currentStats[this.statsMap[key].key] = _currentStats[key]
     }
-    this.messageHandler.socket.emit('stats', JSON.stringify(currentStats), '')
+    this.messageHandler.socket.emit('stats', this.sid + ' ' +  JSON.stringify(currentStats), '')
   }
 
 }

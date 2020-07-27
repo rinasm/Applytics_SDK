@@ -57,7 +57,8 @@ export default class RecorderHandler {
             });
             this.statsHandler = new StatsHandler({
                 messageHandler: this.messageHandler,
-                recorder: this.recorder
+                recorder: this.recorder,
+                sid: this.sid
             });
 
             this.recorder.start(document.body); 
