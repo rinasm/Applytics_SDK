@@ -3,6 +3,9 @@ let listeners:any = {};
 
 export default class Socket {
 
+    conneted: Boolean = false;
+    buffer: any = [];
+
     constructor(host:any, sid:any, aid:any) {
         socket = new WebSocket(host);
         socket.onopen = function(e:any) {
@@ -17,6 +20,12 @@ export default class Socket {
             let topic = (event.data || '').split(' ');
             let data = topic[1];
             topic = topic[0];
+            if(topic === 'Accepted') {
+                this.conneted = true;
+                for(let idx in this.buffer) {
+                    this.emit( this.buffer[idx].topic, this.buffer[idx].data, this.buffer[idx].key )
+                }
+            }
             if(topic in listeners) {
                 listeners[topic](data);
             }
@@ -32,7 +41,11 @@ export default class Socket {
     }
 
     emit(topic:string, data:string, key:string) {
-        socket.send('/' + topic + ' ' + data + ' ' + key);
+        if(this.conneted) {
+            socket.send('/' + topic + ' ' + data + ' ' + key);
+        } else {
+            this.buffer.push({ topic, data, key })
+        }
     }
 
     on(key:string, func:any) {
