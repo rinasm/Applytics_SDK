@@ -35,6 +35,7 @@ export default class Recorder {
     metaDataHandler: any;
     mouseMoveThreshold: any = 33;
     lastMouseMoveEventGenerated: any = window.performance.now();
+    onEvent: any = null;
 
     constructor(args: any) {
         this.cid = args.cid;
@@ -306,9 +307,11 @@ export default class Recorder {
         } 
         event = {
             ...event,
-            ...action,
-            navigationType: performance.navigation.type
+            ...action
         } 
+        if(this.onEvent) {
+            this.onEvent(event)
+        }
         if(!initialSnapshotSend && event.initial) {
             initialSnapshotSend = true;
             setTimeout(()=> {

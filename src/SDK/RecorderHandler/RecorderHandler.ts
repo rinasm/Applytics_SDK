@@ -3,6 +3,7 @@ import {getSID, parseURL} from '../Helpers/Helpers';
 import Recorder from '../Recorder/Recorder'; 
 import { MessageHandler } from './MessageHandler';
 import { SDK_VERSION } from '../Constants/Constants';
+import StatsHandler from '../StatsHandler/StatsHandler';
 
 interface RHArgs {
     clientId: String,
@@ -20,6 +21,7 @@ export default class RecorderHandler {
     socket: any;
     initiated: Boolean = false; 
     messageHandler: any;
+    statsHandler: any;
 
 
     constructor(args: RHArgs) {
@@ -53,6 +55,11 @@ export default class RecorderHandler {
                 sessionMeta: this.getSessionMeta(),
                 onBeforeUnload: ()=> this.setSessionDataToLS()
             });
+            this.statsHandler = new StatsHandler({
+                messageHandler: this.messageHandler,
+                recorder: this.recorder
+            });
+
             this.recorder.start(document.body); 
             this.setSessionDataToLS();
             setInterval(this.setSessionDataToLS, 1000); 

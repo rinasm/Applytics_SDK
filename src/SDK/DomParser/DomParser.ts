@@ -163,7 +163,8 @@ export default class DomParser {
             scrollTop: document.documentElement.scrollTop,
             scrollLeft: document.documentElement.scrollLeft,
             consoleStatus: this.getRecorder().consoleStatus,
-            location: this.getRecorder().getURLDetails()
+            location: this.getRecorder().getURLDetails(),
+            navigationType: performance.navigation.type
         })
     }
 
