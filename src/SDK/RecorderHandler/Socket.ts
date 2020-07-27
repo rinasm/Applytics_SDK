@@ -16,7 +16,7 @@ export default class Socket {
             }, 30000)
         };
 
-        socket.onmessage = function(event:any) {
+        socket.onmessage = (event:any) => {
             let topic = (event.data || '').split(' ');
             let data = topic[1];
             topic = topic[0];
