@@ -46,6 +46,9 @@ export default class StatsHandler {
     try {
       _currentStats = JSON.parse(_currentStats);
     } catch (e) {
+      _currentStats = null
+    }
+    if(!_currentStats) {
       _currentStats = {};
       for(let key in this.statsMap) {
         _currentStats[key] = 0;
