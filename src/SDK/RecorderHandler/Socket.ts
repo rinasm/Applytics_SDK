@@ -22,6 +22,7 @@ export default class Socket {
             topic = topic[0];
             if(topic === 'Accepted') {
                 this.conneted = true;
+                if((window as any).__ARC_DEV__) console.log('[ARC] Socket Handshake done')
                 for(let idx in this.buffer) {
                     this.emit( this.buffer[idx].topic, this.buffer[idx].data, this.buffer[idx].key )
                 }

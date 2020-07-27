@@ -12,7 +12,7 @@ export class MessageHandler {
     sid:any;
     aid:any;
     cid:any;
-    packetIndex:any = 0;
+    packetIndex:any = parseInt((localStorage.getItem('arcpindex') as any) || 0, 10) || 0;
     rapidStoreId:any = 0;
 
     constructor(sid: any, aid:any, cid:any, args: any) {
@@ -273,12 +273,13 @@ export class MessageHandler {
             cid: this.cid,
             aid: this.aid,
             pid: this.getPID(),
-            index: this.packetIndex,
+            index: this.packetIndex, 
             type,
             timestamp: Date.now(),
             data
         };
         this.packetIndex+=1;
+        localStorage.setItem('arcpindex', this.packetIndex+'');
         if((window as any).ARCDev) {
             let size:any =  JSON.stringify(packet).length * 2;
             (window as any).log('[ARC] Sending Data', this.dataBuffer.length);
