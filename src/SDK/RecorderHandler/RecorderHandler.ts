@@ -113,7 +113,7 @@ export default class RecorderHandler {
               language: meta.language,
               cookieEnabled: meta.cookieEnabled,
               referrer: parseURL(meta.referrer || null),
-              browserVersion: meta.browser,
+              browserVersion: meta.browserVersion,
               osVersion: meta.os,
               userAgent: navigator.userAgent,
               SDK_VERSION
