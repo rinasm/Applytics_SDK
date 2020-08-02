@@ -17,25 +17,31 @@ export default class UserDataHandler {
     this.userData = {
       sid: this.sid, 
       type: 'userInfo',               
-      username: '',
       uuid: this.uuid,
-      id: null,
-      sex: 'na',
-      age: null,
-      email: null,
-      extra: {}
     };
     
     (window as any).ARC.updateUserInfo =(info: any)=> {
-      this.userData.username = info.username;
-      this.userData.id = info.id;
-      this.userData.sex = info.sex;
-      this.userData.age = info.age;
-      this.userData.email = info.email;
-      this.userData.extra = {
-        ...this.userData.extra,
-        ...info.extra
+      if(info.username) {
+        this.userData.username = info.username;
       }
+      if(info.id) {
+        this.userData.id = info.id;
+      }
+      if(info.sex) {
+        this.userData.sex = info.sex;
+      }
+      if(info.age) {
+        this.userData.age = info.age;
+      }
+      if(info.email) {
+        this.userData.email = info.email;
+      }
+      if(info.extra) {
+        this.userData.extra = {
+          ...(this.userData.extra || {}),
+          ...info.extra
+        }
+      } 
       this.updateToServer();
     }
   }
