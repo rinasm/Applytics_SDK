@@ -36,6 +36,7 @@ export default class Recorder {
     mouseMoveThreshold: any = 33;
     lastMouseMoveEventGenerated: any = window.performance.now();
     onEvent: any = null;
+    paused: any = false;
 
     constructor(args: any) {
         this.cid = args.cid;
@@ -49,7 +50,24 @@ export default class Recorder {
         this.webRequestHandler = new WebRequestHandler({ getRecorder: ()=> this });
         this.metaDataHandler = new MetaDataHandler({ getRecorder: ()=> this });
         if((window as any).__ARC_DEV__) console.log('[ARC] Recorder Initiated. V '+ SDK_VERSION);
+
+        (window as any).ARC.pause = () => {
+            this.paused = true;
+        }
+
+        (window as any).ARC.continue = () => {
+            this.paused = false;
+        }
     }    
+
+    stop =()=> {
+        this.domParser = null;
+        this.consoleHandler = null;
+        this.mutaionHandler = null;
+        this.windowEventHandler = null;
+        this.webRequestHandler = null;
+        this.metaDataHandler = null;
+    }
 
     start =(node: any)=> {
         if((window as any).__ARC_DEV__) console.log('[ARC] Started Recording', performance.now());
@@ -301,6 +319,9 @@ export default class Recorder {
     }
 
     generateEvent =(action:any)=> {
+        if(this.paused)
+            return;
+
         let event:any = {
             time: this.getTime(),
             eid: this.getEventID()

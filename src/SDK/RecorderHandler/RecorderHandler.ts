@@ -25,7 +25,6 @@ export default class RecorderHandler {
     statsHandler: any;
     userDataHandler: any;
 
-
     constructor(args: RHArgs) {
 
         this.sid = getSID();
@@ -73,6 +72,15 @@ export default class RecorderHandler {
             this.setSessionDataToLS();
             setInterval(this.setSessionDataToLS, 1000); 
         }, window) 
+    }
+
+    stop =()=> {
+        this.recorder.stop();
+        this.recorder = null;
+        this.messageHandler.stop();
+        this.messageHandler = null;
+        this.userDataHandler = null;
+        this.statsHandler = null;
     }
 
     getARCSIDMeta =(onClose: any)=> {

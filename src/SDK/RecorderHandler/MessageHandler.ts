@@ -15,6 +15,7 @@ export class MessageHandler {
     packetIndex:any = parseInt((localStorage.getItem('arcpindex') as any) || 0, 10) || 0;
     rapidStoreId:any = 0;
     listeners:any = [];
+    hbInter: any;
 
     constructor(sid: any, aid:any, cid:any, args: any) {
 
@@ -47,13 +48,18 @@ export class MessageHandler {
         }
 
 
-        setInterval(()=> {
+        this.hbInter = setInterval(()=> {
             if(this.dataBuffer && this.dataBuffer.length) {
                 this.emitToSocket('event', this.dataBuffer);
                 this.dataBuffer = [];
                 this.cleanRapidStore();
             }
         }, 1000); 
+    }
+
+    stop =()=> {
+        this.socket = null;
+        clearInterval(this.hbInter)
     }
 
     saveStore =()=> {
