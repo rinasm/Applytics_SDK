@@ -187,8 +187,8 @@ export class MessageHandler {
         this.socketConnect = true;
         if(!(window as any).ARCNavigation) {
             this.emit('beacon', JSON.stringify(this.sessionMeta), true);
-            this.callListeners('sessionSent')
-        }
+        } 
+        this.callListeners('sessionSent')
         this.requestDataUpload();
 
     }
