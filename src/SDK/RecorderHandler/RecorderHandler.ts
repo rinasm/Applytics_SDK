@@ -4,6 +4,7 @@ import Recorder from '../Recorder/Recorder';
 import { MessageHandler } from './MessageHandler';
 import { SDK_VERSION } from '../Constants/Constants';
 import StatsHandler from '../StatsHandler/StatsHandler';
+import UserDataHandler from '../UserDataHandler/UserDataHandler';
 
 interface RHArgs {
     clientId: String,
@@ -22,6 +23,7 @@ export default class RecorderHandler {
     initiated: Boolean = false; 
     messageHandler: any;
     statsHandler: any;
+    userDataHandler: any;
 
 
     constructor(args: RHArgs) {
@@ -29,6 +31,7 @@ export default class RecorderHandler {
         this.sid = getSID();
         this.aid = args.appId;
         this.cid = args.clientId;
+        (window as any).ARC = {};
 
         (window as any).dataSendQList = {};
 
@@ -60,6 +63,11 @@ export default class RecorderHandler {
                 recorder: this.recorder,
                 sid: this.sid
             });
+
+            this.userDataHandler = new UserDataHandler({
+                messageHandler: this.messageHandler,
+                sid: this.sid
+            })
 
             this.recorder.start(document.body); 
             this.setSessionDataToLS();

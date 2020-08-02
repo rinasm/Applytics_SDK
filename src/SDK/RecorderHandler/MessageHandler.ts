@@ -14,6 +14,7 @@ export class MessageHandler {
     cid:any;
     packetIndex:any = parseInt((localStorage.getItem('arcpindex') as any) || 0, 10) || 0;
     rapidStoreId:any = 0;
+    listeners:any = [];
 
     constructor(sid: any, aid:any, cid:any, args: any) {
 
@@ -125,11 +126,11 @@ export class MessageHandler {
         return result;
     }
 
-    emit =(topic:any, data: any, prepend=false)=> {
+    emit =(topic:any, data: any, prepend=false, compress=true)=> {
         let beaconId: any = this.generateRandomString(5);
         let beacon: any = {
             beaconId,
-            data: Compressor.compressToBase64(data),
+            data: compress ? Compressor.compressToBase64(data) : JSON.stringify(data),
             topic,
             prepend,
             sendToServer: false,
@@ -186,6 +187,7 @@ export class MessageHandler {
         this.socketConnect = true;
         if(!(window as any).ARCNavigation) {
             this.emit('beacon', JSON.stringify(this.sessionMeta), true);
+            this.callListeners('sessionSent')
         }
         this.requestDataUpload();
 
@@ -200,6 +202,25 @@ export class MessageHandler {
                 break;
             }
         }
+    }
+
+    /**
+     * 
+     *  Listeners And Sub
+     * 
+     */
+
+    callListeners =(key:string)=> {
+        for(let idx in this.listeners[key]) {
+            this.listeners[key][idx]()
+        }
+    }
+
+    addListener =(key:string, listener:Function)=> {
+        if(!this.listeners[key])
+            this.listeners[key] = [];
+
+        this.listeners[key].push(listener)
     }
 
     /**
