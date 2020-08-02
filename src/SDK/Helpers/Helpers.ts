@@ -11,7 +11,7 @@ const generateRandomString =(length: Number)=> {
 export const getBeaconID =()=> generateRandomString(5);
 
 export const generateUUID =()=> {
-    return generateRandomString(4) + '-' + generateRandomString(4) + '-' + generateRandomString(2);
+    return generateRandomString(8) + '-' + generateRandomString(8) + '-' + generateRandomString(8);
 }
 
 export const generateSID =()=> {
