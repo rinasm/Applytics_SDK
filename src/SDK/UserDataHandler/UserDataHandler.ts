@@ -47,7 +47,7 @@ export default class UserDataHandler {
 
   updateToServer =()=> {
     if(this.initiated) {
-      this.messageHandler.socket.emit('/userInfo', JSON.stringify(this.userData), '');
+      this.messageHandler.socket.emit('userInfo', JSON.stringify(this.userData), '');
     }
   }
 
