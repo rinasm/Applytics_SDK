@@ -19,7 +19,6 @@ export default class UserDataHandler {
       type: 'userInfo',               
       uuid: this.uuid,
     };
-    
     (window as any).ARC.updateUserInfo =(info: any)=> {
       if(info.username) {
         this.userData.username = info.username;
@@ -41,7 +40,7 @@ export default class UserDataHandler {
           ...(this.userData.extra || {}),
           ...info.extra
         }
-      } 
+      }
       this.updateToServer();
     }
   }

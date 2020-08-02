@@ -124,7 +124,12 @@ export default class RecorderHandler {
               browserVersion: meta.browserVersion,
               osVersion: meta.os,
               userAgent: navigator.userAgent,
-              SDK_VERSION
+              SDK_VERSION,
+              appStartTime: performance.now(),
+              screenWidth: window.innerWidth,
+              screenHeight: window.innerHeight,
+              scrollTop: document.documentElement.scrollTop,
+              scrollLeft: document.documentElement.scrollLeft,
             },
         }
     }
