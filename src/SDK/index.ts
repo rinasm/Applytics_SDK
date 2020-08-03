@@ -38,7 +38,11 @@ const startARC=(clientId:String, appId:String, src:any, arccsrc=false)=> {
         }
 
         (window as any).ARC.start = () => {
-            (window as any).__rec__ = new RecorderHandler({clientId, appId, arccsrc});
+            if(!(window as any).__rec__) {
+                (window as any).__rec__ = new RecorderHandler({clientId, appId, arccsrc});
+            } else {
+                console.error('[ARC] Cannot Initilize multiple ARC instances, stop current instance by using window.ARC.stop() method');
+            }
         }
 
         (window as any).ARC.start();

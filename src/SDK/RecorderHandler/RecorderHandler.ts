@@ -50,11 +50,11 @@ export default class RecorderHandler {
                 cid: this.cid,
                 aid: this.aid
             });
-            this.recorder.getLiveUpdate(this.onRecorderUpdater);
             this.messageHandler = new MessageHandler(this.sid, this.aid, this.cid, {
                 sessionMeta: this.getSessionMeta(),
                 onBeforeUnload: ()=> this.setSessionDataToLS()
             });
+            this.recorder.getLiveUpdate(this.onRecorderUpdater);
             this.statsHandler = new StatsHandler({
                 messageHandler: this.messageHandler,
                 recorder: this.recorder,
