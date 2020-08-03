@@ -34,6 +34,7 @@ export default class RecorderHandler {
 
         if(!(window as any).ARCNavigation && args.arccsrc) {
             if((window as any).__ARC_DEV__) console.log('[ARC] Exiting Cached SDK');
+            (window as any).ARC.stop();
             return;
         } else if(args.arccsrc) {
             if((window as any).__ARC_DEV__) console.log('[ARC] Using Cached SDK');
