@@ -34,6 +34,8 @@ const startARC=(clientId:String, appId:String, src:any, arccsrc=false)=> {
                 (window as any).__rec__.stop() 
             }
             if((window as any).__ARC_DEV__) console.log('[ARC] Stopping Recorder');
+
+            (window as any).recorderStopped = true;
             localStorage.removeItem('arcsid');
             (window as any).__rec__ = null;
             delete (window as any).__rec__;

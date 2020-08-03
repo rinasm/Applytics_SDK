@@ -26,7 +26,10 @@ export const getSID =()=> {
     try {
         arcsid = JSON.parse(arcsid) as any
     } catch (e) {}
-    if(arcsid && arcsid.sid && ((document.referrer || '').indexOf(window.location.host) !== -1 || performance.navigation.type === 1)) {
+    if((window as any).recorderStopped !== true && arcsid && 
+        arcsid.sid && ((document.referrer || '').indexOf(window.location.host) !== -1 || performance.navigation.type === 1)) {
+
+        (window as any).recorderStopped = false;
         (window as any).ARCNavigation = true;
         (window as any).sidinit = Date.now() - sidinit;
         if((window as any).__ARC_DEV__) console.log('[ARC] ' + (performance.navigation.type === 1 ? 'Refresh' : 'Navigation') +' Detected');
