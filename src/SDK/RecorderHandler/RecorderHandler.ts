@@ -30,8 +30,6 @@ export default class RecorderHandler {
         this.sid = getSID();
         this.aid = args.appId;
         this.cid = args.clientId;
-        (window as any).ARC = {};
-
         (window as any).dataSendQList = {};
 
         if(!(window as any).ARCNavigation && args.arccsrc) {

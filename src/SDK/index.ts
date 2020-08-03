@@ -27,6 +27,7 @@ const startARC=(clientId:String, appId:String, src:any, arccsrc=false)=> {
         if((window as any).__ARC_DEV__) console.log('[ARC] Recorder Handler Initiated, Client ID', host, clientId, 'App ID', appId, performance.now());
         let rec: any;
 
+        (window as any).ARC = {};
         (window as any).ARC.stop = () => {
             rec.stop() 
             localStorage.removeItem('arcsid')
