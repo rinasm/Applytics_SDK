@@ -25,19 +25,20 @@ const startARC=(clientId:String, appId:String, src:any, arccsrc=false)=> {
         if((window as any).__ARC_DEV__) console.error('[ARC] Invalid host ' + host + '. This host don\'t have permission to run Applytics SDK.');
     } else {
         if((window as any).__ARC_DEV__) console.log('[ARC] Recorder Handler Initiated, Client ID', host, clientId, 'App ID', appId, performance.now());
-        let rec: any;
+        ;
 
         (window as any).ARC = {};
         (window as any).ARC.stop = () => {
-            if(rec) {
-                rec.stop() 
+            if((window as any).__rec__) {
+                (window as any).__rec__.stop() 
             }
-            localStorage.removeItem('arcsid')
-            rec = null;
+            localStorage.removeItem('arcsid');
+            (window as any).__rec__ = null;
+            delete (window as any).__rec__;
         }
 
         (window as any).ARC.start = () => {
-            rec = new RecorderHandler({clientId, appId, arccsrc});
+            (window as any).__rec__ = new RecorderHandler({clientId, appId, arccsrc});
         }
 
         (window as any).ARC.start();
