@@ -69,6 +69,7 @@ export default class Recorder {
         if(observer && observer.disconnect) {
             observer.disconnect();
         }
+        eventListener = null;
         this.unbindAllNodesFromAllEvents();
         this.unbindMouseEvent(document);
         this.domParser = null;
