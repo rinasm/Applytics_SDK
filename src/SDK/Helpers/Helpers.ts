@@ -22,6 +22,7 @@ export const getSID =()=> {
     let sid = (window as any).apprc_sid || null;
     let arcsid = localStorage.getItem('arcsid') as any;
     let sidinit = parseInt(localStorage.getItem('sidinit') as any, 10);
+    (window as any).ARCNavigation = false;
     try {
         arcsid = JSON.parse(arcsid) as any
     } catch (e) {}
