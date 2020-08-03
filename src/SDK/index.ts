@@ -29,7 +29,9 @@ const startARC=(clientId:String, appId:String, src:any, arccsrc=false)=> {
 
         (window as any).ARC = {};
         (window as any).ARC.stop = () => {
-            rec.stop() 
+            if(rec) {
+                rec.stop() 
+            }
             localStorage.removeItem('arcsid')
             rec = null;
         }
