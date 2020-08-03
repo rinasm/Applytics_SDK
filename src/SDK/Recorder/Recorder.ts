@@ -9,7 +9,7 @@ import MetaDataHandler from '../MetaDataHandler/MetaDataHandler';
 
 const MutationObserver = (window as any).MutationObserver || (window as any).WebKitMutationObserver || (window as any).MozMutationObserver;
 
-let observer;
+let observer:any;
 let currentNodeId = 1;
 let data: Array<any> = [];
 let dataBuffer: Array<any> = []
@@ -37,6 +37,8 @@ export default class Recorder {
     lastMouseMoveEventGenerated: any = window.performance.now();
     onEvent: any = null;
     paused: any = false;
+    __root_node__: any;
+    eventNodes:any = {}
 
     constructor(args: any) {
         this.cid = args.cid;
@@ -57,13 +59,22 @@ export default class Recorder {
 
         (window as any).ARC.continue = () => {
             this.paused = false;
+            if(this.__root_node__) {
+                this.domParser.takeSnapshot(this.__root_node__, true); 
+            }
         }
     }    
 
     stop =()=> {
+        if(observer && observer.disconnect) {
+            observer.disconnect();
+        }
+        this.unbindAllNodesFromAllEvents();
+        this.unbindMouseEvent(document);
         this.domParser = null;
         this.consoleHandler = null;
         this.mutaionHandler = null;
+        this.windowEventHandler.stop();
         this.windowEventHandler = null;
         this.webRequestHandler = null;
         this.metaDataHandler = null;
@@ -75,6 +86,7 @@ export default class Recorder {
         this.bindScroll(window);
         this.bindMouseEvent(document);
         this.windowEventHandler.checkConsoleStatus(false);
+        this.__root_node__ = node;
         this.domParser.takeSnapshot(node, true); 
         observer = new MutationObserver((mutations:any)=> {
             this.mutaionHandler.handleMutations(mutations);
@@ -92,6 +104,7 @@ export default class Recorder {
         if(node.addEventListener) {
             node.isScroll = true;
             node.addEventListener('scroll', this.handleOnScroll);
+            this.eventNodes[node.rcid] = node;
         }
     }
 
@@ -99,6 +112,7 @@ export default class Recorder {
         if(node.addEventListener) {
             node.isOnKeyup = true;
             node.addEventListener('keyup', this.handleOnKeyup);
+            this.eventNodes[node.rcid] = node;
         }
     }
 
@@ -108,6 +122,20 @@ export default class Recorder {
         node.addEventListener('touchmove', this.handleTouchMove);
         node.addEventListener('touchend', this.handleTouchEnd);
         node.addEventListener('click', this.handleMouseClick);
+    }
+
+    unbindMouseEvent =(node:any)=> {
+        node.removeEventListener('mousemove', this.handleMouseMove);
+        node.removeEventListener('touchstart', this.handleTouchStart);
+        node.removeEventListener('touchmove', this.handleTouchMove);
+        node.removeEventListener('touchend', this.handleTouchEnd);
+        node.removeEventListener('click', this.handleMouseClick);
+    }
+
+    unbindAllNodesFromAllEvents =()=> {
+        for(let idx in this.eventNodes) {
+            this.unbindFromAllEvent(this.eventNodes[idx])
+        }
     }
 
     unbindFromAllEvent =(node:any)=> {

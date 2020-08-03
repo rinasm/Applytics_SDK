@@ -13,57 +13,69 @@ export default class WindowEventHandler {
     constructor(args: any) {
 
         this.getRecorder =()=> args.getRecorder();
-
-        const trackWindowCommand =(e: any)=> {
-            let code = (document.all) ? (window.event as any).keyCode : e.which; 
-            let cmd = null;
-            if (this.ctrlKeyStatus && code === 86) {
-                cmd = commands.PASTE;
-            } else if (this.ctrlKeyStatus && code === 67) { 
-                cmd = commands.COPY;
-            } else if (this.ctrlKeyStatus && code === 83) { 
-                cmd = commands.SAVE;
-            } else if (this.ctrlKeyStatus && code === 68) { 
-                cmd = commands.BOOKMARK;
-            }
-
-            if(cmd !== null) {
-                this.getRecorder().generateEvent({
-                    type: eventTypes.commandExecuted,
-                    cmd
-                })
-            }
-        }
-
-        const trackCtrl =(e: any, isKeyDown:Boolean)=> {
-            let code = e.keyCode || e.which;
-            let isMac = (this.getRecorder().os||'').toLocaleLowerCase().indexOf('mac') !== -1;
-            if((code === 91 && isMac) || (!isMac && code === 17)) {
-                this.ctrlKeyStatus = isKeyDown;
-            }
-        }
-        document.addEventListener('keydown', e=>trackCtrl(e, true), false);
-        document.addEventListener('keyup', e=>trackCtrl(e, false), false);
-        document.addEventListener('keydown', trackWindowCommand, false);
+        document.addEventListener('keydown', this.onKeyDown, false);
+        document.addEventListener('keyup', this.onKeyUp, false);
+        document.addEventListener('keydown', this.trackWindowCommand, false);
         this.trackWindowResize();
         this.trackHashChange();
     }
 
+    trackWindowCommand =(e: any)=> {
+        let code = (document.all) ? (window.event as any).keyCode : e.which; 
+        let cmd = null;
+        if (this.ctrlKeyStatus && code === 86) {
+            cmd = commands.PASTE;
+        } else if (this.ctrlKeyStatus && code === 67) { 
+            cmd = commands.COPY;
+        } else if (this.ctrlKeyStatus && code === 83) { 
+            cmd = commands.SAVE;
+        } else if (this.ctrlKeyStatus && code === 68) { 
+            cmd = commands.BOOKMARK;
+        }
+
+        if(cmd !== null) {
+            this.getRecorder().generateEvent({
+                type: eventTypes.commandExecuted,
+                cmd
+            })
+        }
+    }
+
+    trackCtrl =(e: any, isKeyDown:Boolean)=> {
+        let code = e.keyCode || e.which;
+        let isMac = (this.getRecorder().os||'').toLocaleLowerCase().indexOf('mac') !== -1;
+        if((code === 91 && isMac) || (!isMac && code === 17)) {
+            this.ctrlKeyStatus = isKeyDown;
+        }
+    }
+
+    onKeyDown =(e: any)=> this.trackCtrl(e, true);
+    
+    onKeyUp =(e: any)=> this.trackCtrl(e, false);
+
+    stop =()=> {
+        window.removeEventListener('resize', this.onWindowResize)
+        document.removeEventListener('keydown', this.onKeyDown);
+        document.removeEventListener('keyup', this.onKeyUp);
+        document.removeEventListener('keydown', this.trackWindowCommand);
+    }
 
     trackWindowResize =()=> {
-        window.addEventListener('resize', ()=> {
-            clearTimeout(this.resizeDebounce);
-            this.resizeDebounce = setTimeout(()=> {
-                this.getRecorder().generateEvent({
-                    type: eventTypes.windowResize,
-                    screenWidth: window.innerWidth,
-                    screenHeight: window.innerHeight,
-                    scrollTop: document.documentElement.scrollTop,
-                    scrollLeft: document.documentElement.scrollLeft,
-                })
-                this.checkConsoleStatus(true);
-            }, 400)
-        })
+        window.addEventListener('resize', this.onWindowResize)
+    }
+
+    onWindowResize = ()=> {
+        clearTimeout(this.resizeDebounce);
+        this.resizeDebounce = setTimeout(()=> {
+            this.getRecorder().generateEvent({
+                type: eventTypes.windowResize,
+                screenWidth: window.innerWidth,
+                screenHeight: window.innerHeight,
+                scrollTop: document.documentElement.scrollTop,
+                scrollLeft: document.documentElement.scrollLeft,
+            })
+            this.checkConsoleStatus(true);
+        }, 400)
     }
 
     checkConsoleStatus =(generateEvent=false)=> {
