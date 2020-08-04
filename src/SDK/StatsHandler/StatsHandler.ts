@@ -16,10 +16,24 @@ export default class StatsHandler {
     this.sid = args.sid;
   }
 
+  sendUpdate =(args: any)=> {
+    let body = {
+      sid: this.sid,
+      type: 'update',
+      ...args
+    }
+    this.messageHandler.socket.emit('update', JSON.stringify(body), '')
+  }
+
   onEvent = (event:any) => {
     switch(event.type) {
+      case eventTypes.hashChanged:
+        this.sendUpdate({url: event.href})
+        break;
+
       case eventTypes.snapshot:
         this.updateLS('pc')
+        this.sendUpdate({url: event.location.href})
         break;
 
       case eventTypes.mouseClick:
