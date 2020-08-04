@@ -42,7 +42,7 @@ const startARC=(clientId:String, appId:String, src:any, arccsrc=false)=> {
         }
 
         (window as any).ARC.start = () => {
-            if(!(window as any).__rec__) {
+            if(!(window as any).__rec__ || !(window as any).__rec__.recorder) {
                 if((window as any).__ARC_DEV__) console.log('[ARC] Starting Recorder');
                 (window as any).__rec__ = new RecorderHandler({clientId, appId, arccsrc});
             } else {
