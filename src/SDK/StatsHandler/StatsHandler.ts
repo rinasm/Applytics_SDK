@@ -2,6 +2,10 @@ import { eventTypes } from "../Constants/Constants";
 
 export default class StatsHandler {
 
+  trackDomElements: any = [
+    {tagName: 'form', events: ['click']} 
+  ]
+
   statsMap:any = {
     pc: { key: 'pageCount'},
     cc: { key: 'clickCount' },
@@ -14,6 +18,19 @@ export default class StatsHandler {
     args.recorder.onEvent = this.onEvent;
     this.messageHandler = args.messageHandler;
     this.sid = args.sid;
+  }
+
+  updateDomElTracker =()=> {
+    for(let idx in this.trackDomElements) {
+      let elms = document.getElementsByTagName(this.trackDomElements[idx].tagName);
+      for(let jdx in elms) {
+        for(let kdx in this.trackDomElements[idx].events) {
+          elms[jdx].addEventListener(this.trackDomElements[idx].events[kdx], ()=>{ 
+            this.sendUpdate({tag: this.trackDomElements[idx].tagName})
+          })
+        }
+      }
+    }
   }
 
   sendUpdate =(args: any)=> {
@@ -34,6 +51,7 @@ export default class StatsHandler {
       case eventTypes.snapshot:
         this.updateLS('pc')
         this.sendUpdate({url: event.location.href})
+        this.updateDomElTracker()
         break;
 
       case eventTypes.mouseClick:
