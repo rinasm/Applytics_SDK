@@ -23,11 +23,13 @@ export default class StatsHandler {
   updateDomElTracker =()=> {
     for(let idx in this.trackDomElements) {
       let elms = document.getElementsByTagName(this.trackDomElements[idx].tagName);
-      for(let jdx in elms) {
+      for(let jdx=0; jdx<elms.length;jdx++) {
         for(let kdx in this.trackDomElements[idx].events) {
-          elms[jdx].addEventListener(this.trackDomElements[idx].events[kdx], ()=>{ 
-            this.sendUpdate({tag: this.trackDomElements[idx].tagName})
-          })
+          if(elms[jdx] && elms[jdx].addEventListener) {
+            elms[jdx].addEventListener(this.trackDomElements[idx].events[kdx], ()=>{ 
+              this.sendUpdate({tag: this.trackDomElements[idx].tagName})
+            })
+          }
         }
       }
     }
