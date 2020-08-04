@@ -75,7 +75,7 @@ export default class Recorder {
         this.domParser = null;
         this.consoleHandler = null;
         this.mutaionHandler = null;
-        this.windowEventHandler.stop();
+        if(this.windowEventHandler) this.windowEventHandler.stop();
         this.windowEventHandler = null;
         this.webRequestHandler = null;
         this.metaDataHandler = null;

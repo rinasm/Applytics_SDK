@@ -74,9 +74,9 @@ export default class RecorderHandler {
     }
 
     stop =()=> {
-        this.recorder.stop();
+        if(this.recorder) this.recorder.stop();
         this.recorder = null;
-        this.messageHandler.stop();
+        if(this.messageHandler) this.messageHandler.stop();
         this.messageHandler = null;
         this.userDataHandler = null;
         this.statsHandler = null;
