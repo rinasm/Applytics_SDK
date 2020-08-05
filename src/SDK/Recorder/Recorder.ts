@@ -6,6 +6,7 @@ import WindowEventHandler from '../WindowEventHandler/WindowEventHandler';
 import DomParser from '../DomParser/DomParser';
 import WebRequestHandler from '../WebRequestHandler/WebRequestHandler';
 import MetaDataHandler from '../MetaDataHandler/MetaDataHandler';
+import { recursivelyCheckTargetHasClickEvents } from './utils';
 
 const MutationObserver = (window as any).MutationObserver || (window as any).WebKitMutationObserver || (window as any).MozMutationObserver;
 
@@ -150,27 +151,7 @@ export default class Recorder {
         }
     }
 
-    isAttrPresent =(target: any)=> {
-        let attrList = ['href'];
-        for(let idx in target.attributes) {
-            for(let jdx in attrList) {
-                if(target.attributes[idx].localName === attrList[jdx]) {
-                    return true
-                }
-            }
-        }
-        return false;
-    }
-
-    recursivelyCheckTargetHasClickEvents:any =(target:any)=> {
-        if(target.onclick || target.onmousedown || target.onmouseup || target.onchange || this.isAttrPresent(target) ||
-            ['INPUT'].indexOf(target.tagName) !== -1) {
-            return true;
-        } else if(target.tagName !== 'BODY' && target.parentNode){
-            return this.recursivelyCheckTargetHasClickEvents(target.parentNode);
-        }
-        return false;
-    }
+    
 
     /**
      *  Event Handlers
@@ -262,7 +243,7 @@ export default class Recorder {
             }
             if(type === eventTypes.touchStart) {
                 let target = event && event.target ? event.target : null;
-                let isResponsive = target !== null ? this.recursivelyCheckTargetHasClickEvents(target) : false;
+                let isResponsive = target !== null ? recursivelyCheckTargetHasClickEvents(target) : false;
                 let isLink = target !== null && target.href ? true : false;
                 touch = {
                     isResponsive,
@@ -280,7 +261,7 @@ export default class Recorder {
 
     handleMouseClick =(event:any)=> {
         let target = event && event.target ? event.target : null;
-        let isResponsive = target !== null ? this.recursivelyCheckTargetHasClickEvents(target) : false;
+        let isResponsive = target !== null ? recursivelyCheckTargetHasClickEvents(target) : false;
         let isLink = target !== null && target.href ? true : false;
         this.generateEvent({
             mouseX: event.pageX,
