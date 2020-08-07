@@ -51,8 +51,14 @@ export default class StatsHandler {
         break;
 
       case eventTypes.snapshot:
-        this.updateLS('pc')
-        this.sendUpdate({url: event.location.href})
+        this.updateLS('pc');
+        let updateBody:any = {
+          url: event.location.href
+        }
+        if(event.initial) {
+          updateBody.initial = true;
+        }
+        this.sendUpdate(updateBody)
         this.updateDomElTracker()
         break;
 

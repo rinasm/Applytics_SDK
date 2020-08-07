@@ -61,7 +61,7 @@ export default class Recorder {
         (window as any).ARC.continue = () => {
             this.paused = false;
             if(this.__root_node__) {
-                this.domParser.takeSnapshot(this.__root_node__, true); 
+                this.domParser.takeSnapshot(this.__root_node__, !(window as any).ARCNavigation); 
             }
         }
     }    
@@ -89,7 +89,7 @@ export default class Recorder {
         this.bindMouseEvent(document);
         this.windowEventHandler.checkConsoleStatus(false);
         this.__root_node__ = node;
-        this.domParser.takeSnapshot(node, true); 
+        this.domParser.takeSnapshot(node, !(window as any).ARCNavigation); 
         observer = new MutationObserver((mutations:any)=> {
             this.mutaionHandler.handleMutations(mutations);
         });
