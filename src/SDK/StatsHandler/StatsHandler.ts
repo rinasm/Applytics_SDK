@@ -75,7 +75,7 @@ export default class StatsHandler {
         if(event.initial) {
           updateBody.initialUrl = event.location.href;
         } else {
-          updateBody.URL = event.location.href;
+          updateBody.url = event.location.href;
         }
         this.sendUpdate(updateBody)
         this.updateDomElTracker()
