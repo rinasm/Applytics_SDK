@@ -11,7 +11,7 @@ export default class Socket {
         socket = new WebSocket(host);
         socket.onopen = function(e:any) {
             if((window as any).__ARC_DEV__) console.log('[ARC] Connection established');
-            socket.send('/connect '+ sid + splitKey + aid + splitKey + ((window as any).rootSession ? 'initial' : ''));
+            socket.send('/connect' + splitKey + sid + splitKey + aid + ((window as any).rootSession ? (splitKey + 'initial') : ''));
             setInterval(()=> {
                 socket.send('/hb');
             }, 30000)
