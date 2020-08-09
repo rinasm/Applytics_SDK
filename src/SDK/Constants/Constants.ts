@@ -1,5 +1,5 @@
 export const host = 'wss://beacon.applytics.in';
-export const SDK_VERSION = '0.6.26';
+export const SDK_VERSION = '0.6.27';
 export const eventTypes = {
     snapshot: 'snapshot',
     characterData: 'characterData',
@@ -34,3 +34,6 @@ export const commands = {
 export const blacklistedElByClass: Array<String> = [];
 export const consoleTrackList: Array<any> = ['info', 'log', 'warn', 'error']
 export const blacklistedAttrs: Array<String> = ['srcset']
+
+
+export const splitKey = '&%&';

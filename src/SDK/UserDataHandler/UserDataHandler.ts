@@ -1,4 +1,5 @@
 import { generateUUID } from '../Helpers/Helpers';
+import { splitKey } from '../Constants/Constants';
 
 export default class UserDataHandler {
 
@@ -35,12 +36,12 @@ export default class UserDataHandler {
       if(info.email) {
         this.userData.email = info.email;
       }
-      if(info.extra) {
-        this.userData.extra = {
-          ...(this.userData.extra || {}),
-          ...info.extra
-        }
-      }
+      // if(info.extra) {
+      //   this.userData.extra = {
+      //     ...(this.userData.extra || {}),
+      //     ...info.extra
+      //   }
+      // }
       this.updateToServer();
     }
   }
@@ -52,7 +53,11 @@ export default class UserDataHandler {
 
   updateToServer =()=> {
     if(this.initiated) {
-      this.messageHandler.socket.emit('userInfo', JSON.stringify(this.userData), '');
+      for(let key in this.userData) {
+        if(key !== 'sid' && key !== 'type') {
+          this.messageHandler.socket.emit('userInfo',key+splitKey+this.userData[key], '');
+        }
+      }
     }
   }
 

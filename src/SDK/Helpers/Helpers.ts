@@ -42,6 +42,7 @@ export const getSID =()=> {
         localStorage.setItem('arceid', ''+0);
         localStorage.removeItem('arcstats');
         localStorage.removeItem('arcpindex');
+        localStorage.removeItem('_arc_tags');
         (window as any).rootSession = true;
         if((window as any).__ARC_DEV__) console.log('[ARC] Generating SID', sid)
     }

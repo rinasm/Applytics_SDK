@@ -1,4 +1,4 @@
-import { eventTypes } from "../Constants/Constants";
+import { eventTypes, splitKey } from "../Constants/Constants";
 
 export default class StatsHandler {
 
@@ -36,12 +36,31 @@ export default class StatsHandler {
   }
 
   sendUpdate =(args: any)=> {
+    if(args.tag) {
+      let tags:any = localStorage.getItem('_arc_tags');
+      try {
+        tags = JSON.parse(tags);
+      } catch (e) {
+        tags = null;
+      };
+
+      if(!tags) {
+        tags = {}
+      }
+
+      if(tags[args.tag]) { 
+        return;
+      }
+      tags[args.tag] = true;
+      localStorage.setItem('_arc_tags', JSON.stringify(tags));
+    }
+
     let body = {
-      sid: this.sid,
-      type: 'update',
       ...args
     }
-    this.messageHandler.socket.emit('update', JSON.stringify(body), '')
+    for(let key in body) { 
+      this.messageHandler.socket.emit('update', key + splitKey + body[key], '')
+    }
   }
 
   onEvent = (event:any) => {
@@ -52,11 +71,11 @@ export default class StatsHandler {
 
       case eventTypes.snapshot:
         this.updateLS('pc');
-        let updateBody:any = {
-          url: event.location.href
-        }
+        let updateBody:any = {}
         if(event.initial) {
-          updateBody.initial = true;
+          updateBody.initialUrl = event.location.href;
+        } else {
+          updateBody.URL = event.location.href;
         }
         this.sendUpdate(updateBody)
         this.updateDomElTracker()
@@ -102,7 +121,7 @@ export default class StatsHandler {
     for(let key in _currentStats) {
       currentStats[this.statsMap[key].key] = _currentStats[key]
     }
-    this.messageHandler.socket.emit('stats', this.sid + ' ' +  JSON.stringify(currentStats), '')
+    this.messageHandler.socket.emit('stats', this.statsMap[key].key + splitKey + _currentStats[key], '')
   }
 
 }

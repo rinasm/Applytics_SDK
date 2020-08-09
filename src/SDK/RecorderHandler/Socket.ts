@@ -1,5 +1,6 @@
 let socket:any;
 let listeners:any = {};
+import { splitKey } from '../Constants/Constants'; 
 
 export default class Socket {
 
@@ -43,7 +44,7 @@ export default class Socket {
 
     emit(topic:string, data:string, key:string) {
         if(this.conneted) {
-            socket.send('/' + topic + ' ' + data + ' ' + key);
+            socket.send('/' + topic + splitKey + data + splitKey + key);
         } else {
             this.buffer.push({ topic, data, key })
         }
