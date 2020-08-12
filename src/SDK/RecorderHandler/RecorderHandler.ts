@@ -118,6 +118,11 @@ export default class RecorderHandler {
             type:'session',
             deviceType: meta.deviceType,
             // createdAt: Date.now(),
+
+            os: meta.os,
+            referrer: parseURL(meta.referrer || null),
+            browserName: meta.browser,
+
             metaData: {
               browserName: meta.browser,
               pageURL: parseURL(window.location.href),
