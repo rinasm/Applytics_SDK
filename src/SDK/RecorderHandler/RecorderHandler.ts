@@ -117,7 +117,7 @@ export default class RecorderHandler {
             aid: this.aid,
             type:'session',
             deviceType: meta.deviceType,
-            // createdAt: Date.now(),
+            startTime: Date.now(),
 
             os: meta.os,
             referrer: parseURL(meta.referrer || null),
