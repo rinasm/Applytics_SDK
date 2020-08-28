@@ -1,6 +1,15 @@
 import RecorderHandler from './RecorderHandler/RecorderHandler';
 import {SDK_VERSION} from './Constants/Constants'
 
+const checkHost =( host: any )=> {
+    if(!host)
+        return host;
+    host = host.replace('https://', '')
+    host = host.replace('http://', '')
+    host = host.replace('*.', '')
+    return window.location.host.indexOf(host) !== -1;
+}
+
 const startARC=(clientId:String, appId:String, src:any, arccsrc=false)=> {
     let host = atob((appId||'').split('-')[0]);
 
@@ -23,7 +32,7 @@ const startARC=(clientId:String, appId:String, src:any, arccsrc=false)=> {
      *  Validating SDK Host persmission
      */
 
-    if(!host || window.location.host.indexOf(host) === -1) {
+    if(!checkHost(host)) {
         if((window as any).__ARC_DEV__) console.error('[ARC] Invalid host ' + host + '. This host don\'t have permission to run Applytics SDK.');
     } else {
         if((window as any).__ARC_DEV__) console.log('[ARC] Recorder Handler Initiated, Client ID', host, clientId, 'App ID', appId, performance.now());
