@@ -94,7 +94,30 @@ export default class Recorder {
             this.mutaionHandler.handleMutations(mutations);
         });
         observer.observe(node, recorderConfig); 
+        this.recordeParentElementProps(node)
     } 
+
+    /**
+     * 
+     * Recorde Parent Element Props 
+     * 
+     */
+
+    recordeParentElementProps =(node: any)=> {
+        if(node.parentElement) {
+            let attributes: any = {};
+            let parent = node.parentElement;
+
+            for(let idx in parent.attributes) {
+                attributes[parent.attributes[idx].localName] = parent.attributes[idx].value
+            }
+            let event = {
+                attributes,
+                type: eventTypes.parentProps
+            }
+            this.generateEvent(event)
+        }
+    }
 
     /**
      * 

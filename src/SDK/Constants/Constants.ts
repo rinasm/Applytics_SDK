@@ -1,5 +1,5 @@
 export const host = 'wss://beacon.applytics.in';
-export const SDK_VERSION = '0.6.32';
+export const SDK_VERSION = '0.6.33';
 export const eventTypes = {
     snapshot: 'snapshot',
     characterData: 'characterData',
@@ -23,6 +23,7 @@ export const eventTypes = {
     touchStart: 'touchStart',
     touchEnd: 'touchEnd',
     touchMove: 'touchMove',
+    parentProps: 'parentProps',
 }
 export const commands = {
     PASTE: "PASTE",
