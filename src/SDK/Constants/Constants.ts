@@ -1,5 +1,5 @@
 export const host = 'wss://beacon.applytics.in';
-export const SDK_VERSION = '0.6.34';
+export const SDK_VERSION = '0.6.36';
 export const eventTypes = {
     snapshot: 'snapshot',
     characterData: 'characterData',

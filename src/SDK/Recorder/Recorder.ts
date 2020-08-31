@@ -108,10 +108,10 @@ export default class Recorder {
             let attributes: any = {};
             let parent = node.parentElement;
             parent.rcid = -2;
-            let parentObserver = new MutationObserver((mutations:any)=> {
-                this.mutaionHandler.handleMutations(mutations);
-            });
-            parentObserver.observe(parent, {attributes: true}); 
+            // let parentObserver = new MutationObserver((mutations:any)=> {
+            //     this.mutaionHandler.handleMutations(mutations);
+            // });
+            // parentObserver.observe(parent, {attributes: true}); 
 
             for(let idx in parent.attributes) {
                 attributes[parent.attributes[idx].localName] = parent.attributes[idx].value
