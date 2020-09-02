@@ -1,6 +1,8 @@
 import RecorderHandler from './RecorderHandler/RecorderHandler';
 import {SDK_VERSION} from './Constants/Constants'
 
+(window as any).log = console.log;
+
 const checkHost =( host: any )=> {
     if(!host)
         return host;
