@@ -94,7 +94,7 @@ export default class Recorder {
             this.mutaionHandler.handleMutations(mutations);
         });
         observer.observe(node, recorderConfig); 
-        // this.recordeParentElementProps(node)
+        this.recordeParentElementProps(node)
     } 
 
     /**
@@ -237,8 +237,11 @@ export default class Recorder {
     }
 
     handleMouseMove =(event:any)=> {
+        if((window as any).__ARC_DEV__) console.log('[ARC] [1] INTIAIATING MOUSE EVENT')
+        
         if(window.performance.now() - this.lastMouseMoveEventGenerated > this.mouseMoveThreshold) {
             this.lastMouseMoveEventGenerated = window.performance.now();
+            if((window as any).__ARC_DEV__) console.log('[ARC] [2] GENERATING MOUSE EVEN')
             this.generateEvent({
                 mouseX: event.pageX - document.documentElement.scrollLeft,
                 mouseY: event.pageY - document.documentElement.scrollTop,
@@ -360,6 +363,8 @@ export default class Recorder {
     generateEvent =(action:any)=> {
         if(this.paused)
             return;
+
+        if((window as any).__ARC_DEV__) console.log('[ARC] [3] GENERATING EVEN')
 
         let event:any = {
             time: this.getTime(),

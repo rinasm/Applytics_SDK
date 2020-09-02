@@ -258,6 +258,8 @@ export class MessageHandler {
     }
 
     addToRapidStore =(event:any)=> {
+        if((window as any).__ARC_DEV__) console.log('[ARC] [4] ADDING TO RAPID STORE')
+        
         localStorage.setItem('rs_'+ this.rapidStoreId, JSON.stringify(event));
         this.rapidStoreId++;
     }
