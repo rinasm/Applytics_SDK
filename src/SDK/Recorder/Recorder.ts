@@ -237,11 +237,11 @@ export default class Recorder {
     }
 
     handleMouseMove =(event:any)=> {
-        if((window as any).__ARC_DEV__) (window as any).log('[ARC] [1] INTIAIATING MOUSE EVENT')
+        // if((window as any).__ARC_DEV__) (window as any).log('[ARC] [1] INTIAIATING MOUSE EVENT')
         
         if(window.performance.now() - this.lastMouseMoveEventGenerated > this.mouseMoveThreshold) {
             this.lastMouseMoveEventGenerated = window.performance.now();
-            if((window as any).__ARC_DEV__) (window as any).log('[ARC] [2] GENERATING MOUSE EVEN')
+            // if((window as any).__ARC_DEV__) (window as any).log('[ARC] [2] GENERATING MOUSE EVEN')
             this.generateEvent({
                 mouseX: event.pageX - document.documentElement.scrollLeft,
                 mouseY: event.pageY - document.documentElement.scrollTop,
@@ -364,7 +364,7 @@ export default class Recorder {
         if(this.paused)
             return;
 
-        if((window as any).__ARC_DEV__) (window as any).log('[ARC] [3] GENERATING EVEN')
+        // if((window as any).__ARC_DEV__) (window as any).log('[ARC] [3] GENERATING EVEN')
 
         let event:any = {
             time: this.getTime(),
