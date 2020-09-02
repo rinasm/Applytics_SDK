@@ -52,7 +52,7 @@ export default class Recorder {
         this.windowEventHandler = new WindowEventHandler({ getRecorder: ()=> this });
         this.webRequestHandler = new WebRequestHandler({ getRecorder: ()=> this });
         this.metaDataHandler = new MetaDataHandler({ getRecorder: ()=> this });
-        if((window as any).__ARC_DEV__) console.log('[ARC] Recorder Initiated. V '+ SDK_VERSION);
+        if((window as any).__ARC_DEV__) (window as any).log('[ARC] Recorder Initiated. V '+ SDK_VERSION);
 
         (window as any).ARC.pause = () => {
             this.paused = true;
@@ -83,7 +83,7 @@ export default class Recorder {
     }
 
     start =(node: any)=> {
-        if((window as any).__ARC_DEV__) console.log('[ARC] Started Recording', performance.now());
+        if((window as any).__ARC_DEV__) (window as any).log('[ARC] Started Recording', performance.now());
         this.domParser.recordStyle();
         this.bindScroll(window);
         this.bindMouseEvent(document);
@@ -237,11 +237,11 @@ export default class Recorder {
     }
 
     handleMouseMove =(event:any)=> {
-        if((window as any).__ARC_DEV__) console.log('[ARC] [1] INTIAIATING MOUSE EVENT')
+        if((window as any).__ARC_DEV__) (window as any).log('[ARC] [1] INTIAIATING MOUSE EVENT')
         
         if(window.performance.now() - this.lastMouseMoveEventGenerated > this.mouseMoveThreshold) {
             this.lastMouseMoveEventGenerated = window.performance.now();
-            if((window as any).__ARC_DEV__) console.log('[ARC] [2] GENERATING MOUSE EVEN')
+            if((window as any).__ARC_DEV__) (window as any).log('[ARC] [2] GENERATING MOUSE EVEN')
             this.generateEvent({
                 mouseX: event.pageX - document.documentElement.scrollLeft,
                 mouseY: event.pageY - document.documentElement.scrollTop,
@@ -364,7 +364,7 @@ export default class Recorder {
         if(this.paused)
             return;
 
-        if((window as any).__ARC_DEV__) console.log('[ARC] [3] GENERATING EVEN')
+        if((window as any).__ARC_DEV__) (window as any).log('[ARC] [3] GENERATING EVEN')
 
         let event:any = {
             time: this.getTime(),

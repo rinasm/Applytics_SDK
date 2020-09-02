@@ -10,7 +10,7 @@ export default class Socket {
     constructor(host:any, sid:any, aid:any) {
         socket = new WebSocket(host);
         socket.onopen = function(e:any) {
-            if((window as any).__ARC_DEV__) console.log('[ARC] Connection established');
+            if((window as any).__ARC_DEV__) (window as any).log('[ARC] Connection established');
             socket.send('/connect' + splitKey + sid + splitKey + aid + ((window as any).rootSession ? (splitKey + 'initial') : ''));
             setInterval(()=> {
                 socket.send('/hb');
@@ -23,7 +23,7 @@ export default class Socket {
             topic = topic[0];
             if(topic === 'Accepted') {
                 this.conneted = true;
-                if((window as any).__ARC_DEV__) console.log('[ARC] Socket Handshake done')
+                if((window as any).__ARC_DEV__) (window as any).log('[ARC] Socket Handshake done')
                 for(let idx in this.buffer) {
                     this.emit( this.buffer[idx].topic, this.buffer[idx].data, this.buffer[idx].key )
                 }
@@ -35,9 +35,9 @@ export default class Socket {
 
         socket.onclose = function(event:any) {
             if (event.wasClean) {
-                if((window as any).__ARC_DEV__) console.log('[ARC] Connection closed cleanly, code=', event.code, 'reason=', event.reason);
+                if((window as any).__ARC_DEV__) (window as any).log('[ARC] Connection closed cleanly, code=', event.code, 'reason=', event.reason);
             } else {
-                if((window as any).__ARC_DEV__) console.log('[ARC] Connection died');
+                if((window as any).__ARC_DEV__) (window as any).log('[ARC] Connection died');
             }
         };
     }

@@ -33,18 +33,18 @@ export default class RecorderHandler {
         (window as any).dataSendQList = {};
 
         if(!(window as any).ARCNavigation && args.arccsrc) {
-            if((window as any).__ARC_DEV__) console.log('[ARC] Exiting Cached SDK');
+            if((window as any).__ARC_DEV__) (window as any).log('[ARC] Exiting Cached SDK');
             (window as any).ARC.stop();
             return;
         } else if(args.arccsrc) {
-            if((window as any).__ARC_DEV__) console.log('[ARC] Using Cached SDK');
+            if((window as any).__ARC_DEV__) (window as any).log('[ARC] Using Cached SDK');
             (window as any).ARCSDKRU = true;
         }
 
-        if((window as any).__ARC_DEV__) console.log('[ARC] Waiting for document ready state, SID', this.sid);
+        if((window as any).__ARC_DEV__) (window as any).log('[ARC] Waiting for document ready state, SID', this.sid);
 
         (window as any).docReady(()=> {
-            if((window as any).__ARC_DEV__) console.log('[ARC] Doc Ready', performance.now());
+            if((window as any).__ARC_DEV__) (window as any).log('[ARC] Doc Ready', performance.now());
             this.recorderData = [];
             this.recorder = new Recorder({
                 sid: this.sid,

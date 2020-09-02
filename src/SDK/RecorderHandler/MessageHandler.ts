@@ -105,7 +105,7 @@ export class MessageHandler {
             }
             storeLog = {}
         }
-        if((window as any).__ARC_DEV__) console.log('[ARC] Initial Store', localStore.data.length, storeLog);
+        if((window as any).__ARC_DEV__) (window as any).log('[ARC] Initial Store', localStore.data.length, storeLog);
 
         (window as any).localStore = localStore; 
         localStorage.setItem('ms_store_log', JSON.stringify(storeLog))
@@ -117,7 +117,7 @@ export class MessageHandler {
          */
 
         let rsData = this.getRapidStore();
-        if((window as any).__ARC_DEV__) console.log('[ARC] Rapid Store Data', rsData);
+        if((window as any).__ARC_DEV__) (window as any).log('[ARC] Rapid Store Data', rsData);
         this.emitToSocket('event', rsData);
 
     }
@@ -258,7 +258,7 @@ export class MessageHandler {
     }
 
     addToRapidStore =(event:any)=> {
-        if((window as any).__ARC_DEV__) console.log('[ARC] [4] ADDING TO RAPID STORE')
+        if((window as any).__ARC_DEV__) (window as any).log('[ARC] [4] ADDING TO RAPID STORE')
         
         localStorage.setItem('rs_'+ this.rapidStoreId, JSON.stringify(event));
         this.rapidStoreId++;

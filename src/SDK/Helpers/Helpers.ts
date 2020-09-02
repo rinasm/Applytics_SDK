@@ -32,9 +32,9 @@ export const getSID =()=> {
         (window as any).recorderStopped = false;
         (window as any).ARCNavigation = true;
         (window as any).sidinit = Date.now() - sidinit;
-        if((window as any).__ARC_DEV__) console.log('[ARC] ' + (performance.navigation.type === 1 ? 'Refresh' : 'Navigation') +' Detected');
-        if((window as any).__ARC_DEV__) console.log('[ARC] Total Previous Duration', (window as any).sidinit);
-        if((window as any).__ARC_DEV__) console.log('[ARC] Current SID', arcsid.sid);
+        if((window as any).__ARC_DEV__) (window as any).log('[ARC] ' + (performance.navigation.type === 1 ? 'Refresh' : 'Navigation') +' Detected');
+        if((window as any).__ARC_DEV__) (window as any).log('[ARC] Total Previous Duration', (window as any).sidinit);
+        if((window as any).__ARC_DEV__) (window as any).log('[ARC] Current SID', arcsid.sid);
         return arcsid.sid
     }
     if(sid == null) {
@@ -44,7 +44,7 @@ export const getSID =()=> {
         localStorage.removeItem('arcpindex');
         localStorage.removeItem('_arc_tags');
         (window as any).rootSession = true;
-        if((window as any).__ARC_DEV__) console.log('[ARC] Generating SID', sid)
+        if((window as any).__ARC_DEV__) (window as any).log('[ARC] Generating SID', sid)
     }
     localStorage.setItem('sidinit', (Date.now() - (performance as any).now()) as any);
     return sid;
