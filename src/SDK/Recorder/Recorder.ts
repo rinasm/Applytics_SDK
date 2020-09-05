@@ -94,7 +94,8 @@ export default class Recorder {
             this.mutaionHandler.handleMutations(mutations);
         });
         observer.observe(node, recorderConfig); 
-        this.recordeParentElementProps(node)
+        this.recordeParentElementProps(node);
+        this.recordeHead(node);
     } 
 
     /**
@@ -121,6 +122,22 @@ export default class Recorder {
                 type: eventTypes.parentProps
             }
             this.generateEvent(event)
+        }
+    }
+
+    /**
+     * 
+     * Record Head 
+     * 
+     */
+
+    recordeHead =( node:any )=> {
+        if(node.parentElement && node.parentElement.getElementsByTagName('HEAD')[0]) {
+            let head = node.parentElement.getElementsByTagName('HEAD')[0];
+            let headObserver = new MutationObserver((mutations:any)=> {
+                if((window as any).__ARC_DEV__) (window as any).log('[ARC] HEAD MUTATIONS', mutations);
+            });
+            headObserver.observe(head, {childList: true}); 
         }
     }
 
