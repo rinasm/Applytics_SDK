@@ -136,18 +136,23 @@ export default class Recorder {
             let head = node.parentElement.getElementsByTagName('HEAD')[0];
             let headObserver = new MutationObserver((mutations:any)=> {
                 if((window as any).__ARC_DEV__) (window as any).log('[ARC] HEAD MUTATIONS', mutations);
-                for(let idx in mutations.addedNodes) {
-                    let name = mutations.addedNodes[idx].nodeName || mutations.addedNodes[idx].localName; 
-                    if(name === 'LINK') {
-                        let href = mutations.addedNodes[idx].href;
-                        let index = this.domParser.getStylesheetCount() + 1;
-                        this.domParser.fetchAndRecordStyle(href, index, true)
-                    } else if(name === 'STYLE') {
-                        this.generateEvent({
-                            type: eventTypes.styleSheetString,
-                            css: mutations.addedNodes[idx].innerText,
-                            asyncLoad: true
-                        })
+                for(let mdx in mutations) {
+                    for(let idx in mutations[mdx].addedNodes) {
+                        let addedNode = mutations[mdx].addedNodes[idx]
+                        let name = addedNode.nodeName || addedNode.localName; 
+                        if(name === 'LINK') {
+                            let href = addedNode.href;
+                            let index = this.domParser.getStylesheetCount() + 1;
+                            this.domParser.fetchAndRecordStyle(href, index, true)
+                            if((window as any).__ARC_DEV__) (window as any).log('[ARC] HEAD LINK RECORDED', mutations);
+                        } else if(name === 'STYLE') {
+                            this.generateEvent({
+                                type: eventTypes.styleSheetString,
+                                css: addedNode.innerText,
+                                asyncLoad: true
+                            })
+                            if((window as any).__ARC_DEV__) (window as any).log('[ARC] HEAD STYLE RECORDED', mutations);
+                        }
                     }
                 }
             });
