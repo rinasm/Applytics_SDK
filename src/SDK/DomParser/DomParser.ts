@@ -12,16 +12,25 @@ export default class DomParser {
     inputNodeNames: Array<String> = ['TEXTAREA', 'INPUT']; 
     forcedDimensionNodeNames: Array<String> = ['IMG', 'SVG']
     readImageSrc: Boolean = false;
+    loadedCSSMap: any = {};
 
     // search for class
 
-    fetchAndRecordStyle =(url: any, idx:any)=> {
+    getStylesheetCount =()=> Object.keys(this.loadedCSSMap).length;
+
+    fetchAndRecordStyle =(url: any, idx:any, asyncLoad:boolean)=> {
+        if(this.loadedCSSMap[url]) {
+            if((window as any).__ARC_DEV__) (window as any).log('[ARC] Trying to fetch same stylesheet multiple times')
+            return;
+        }
+        this.loadedCSSMap[url] = true;
         XHR.get(url, ()=>{})
             .then(css=> { 
                 this.getRecorder().generateEvent({
                     type: eventTypes.styleSheetString,
                     href: url,
                     index: idx,
+                    asyncLoad,
                     css
                 });
             }, err=> {
@@ -30,6 +39,7 @@ export default class DomParser {
                     type: eventTypes.styleSheetString,
                     index: idx,
                     href: url,
+                    asyncLoad,
                     err
                 });
             })
@@ -56,7 +66,7 @@ export default class DomParser {
                 // });
                 delete this.cssRules[idx];
                 if(document.styleSheets[idx].href) {
-                    this.fetchAndRecordStyle(document.styleSheets[idx].href, idx)
+                    this.fetchAndRecordStyle(document.styleSheets[idx].href, idx, false)
                 }
             }
         }
