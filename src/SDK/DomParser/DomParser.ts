@@ -33,14 +33,15 @@ export default class DomParser {
                     asyncLoad,
                     css
                 });
-            }, err=> {
+            }).catch(err=> {
                 console.error('[ARC] Fetching StyleSheet Failed', url, err);
                 this.getRecorder().generateEvent({
                     type: eventTypes.styleSheetString,
                     index: idx,
                     href: url,
                     asyncLoad,
-                    err
+                    err,
+                    msg: '[ARC] Fetching StyleSheet Failed'
                 });
             })
     }
