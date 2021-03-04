@@ -22,7 +22,7 @@ const startARC=(clientId:String, appId:String, src:any, arccsrc=false)=> {
     (window as any).__setARCDevMode = (state: any) => localStorage.setItem('__ARC_DEV__', state);
     let __ARC_DEV__:any = localStorage.getItem('__ARC_DEV__');
     try {
-        __ARC_DEV__ = JSON.parse(__ARC_DEV__);
+        __ARC_DEV__ = JSON.parse(__ARC_DEV__); 
     } catch (e) {
         __ARC_DEV__ = false;
     }
