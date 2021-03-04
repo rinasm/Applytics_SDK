@@ -11,6 +11,7 @@ FROM golang:alpine AS goBuilder
 WORKDIR /go/src/sdk
 COPY --from=nodebuilder /usr/src/app/src/dist/applytics.js /usr/src/app/main.go ./
 CMD ["ls"]  
+RUN go mod init dashboard
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags '-w -s' -a -installsuffix cgo -o sdk
 
 # Running go project in the smallest container available
